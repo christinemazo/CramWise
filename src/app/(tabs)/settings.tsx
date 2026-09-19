@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useAuth } from "../../contexts/AuthContext";
 import { supabase } from "../../lib/supabase";
 
-export default function Menu() {
+export default function Setttings() {
   const router = useRouter();
   const { session } = useAuth();
 
