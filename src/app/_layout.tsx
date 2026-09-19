@@ -13,7 +13,7 @@ function RootLayoutNav() {
     const inAuthGroup = segments[0] === "(auth)";
 
     if (!session && !inAuthGroup) {
-      router.replace("/sign-in");
+      router.replace("/welcome");
     } else if (session && inAuthGroup) {
       router.replace("/");
     }

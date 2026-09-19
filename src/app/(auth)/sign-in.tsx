@@ -1,13 +1,13 @@
 import { Link } from "expo-router";
 import { useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { supabase } from "../../lib/supabase";
 
@@ -35,7 +35,7 @@ export default function SignIn() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome back</Text>
+      <Text style={styles.title}>Welcome</Text>
 
       <TextInput
         style={styles.input}
