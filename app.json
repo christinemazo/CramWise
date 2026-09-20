@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "CramWise",
+    "slug": "cramwise-settings",
+    "scheme": "cramwise",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "jsEngine": "hermes",
+    "platforms": ["ios", "android", "web"],
+    "plugins": ["expo-router"]
+  }
+}
