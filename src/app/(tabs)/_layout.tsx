@@ -23,7 +23,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="scores"
         options={{
-          title: "Tracking Scores",
+          title: "Scores",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="stats-chart" size={size} color={color} />
           ),
@@ -33,7 +33,7 @@ export default function TabsLayout() {
         name="create"
         options={{
           title: "",
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: () => (
             <Ionicons name="add-circle" size={40} color="#208AEF" />
           ),
         }}
@@ -43,14 +43,14 @@ export default function TabsLayout() {
         options={{
           title: "History",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="time" size={size} color="color" />
+            <Ionicons name="time" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: "Setttings",
+          title: "Settings",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="settings" size={size} color={color} />
           ),

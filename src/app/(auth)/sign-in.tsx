@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -12,6 +12,7 @@ import {
 import { supabase } from "../../lib/supabase";
 
 export default function SignIn() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,12 +31,24 @@ export default function SignIn() {
 
     if (error) {
       Alert.alert("Sign in failed", error.message);
+      return;
     }
+    // Nothing redirects automatically any more, so close the auth flow here.
+    router.replace("/");
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome</Text>
+      <TouchableOpacity
+        style={styles.closeButton}
+        onPress={() =>
+          router.canGoBack() ? router.back() : router.replace("/")
+        }
+      >
+        <Text style={styles.closeText}>✕</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.title}>Welcome back</Text>
 
       <TextInput
         style={styles.input}
@@ -66,7 +79,7 @@ export default function SignIn() {
       </TouchableOpacity>
 
       <Link href="/sign-up" style={styles.link}>
-        <Text>Don't have an account? Sign up</Text>
+        <Text>Don&apos;t have an account? Sign up</Text>
       </Link>
     </View>
   );
@@ -79,6 +92,8 @@ const styles = StyleSheet.create({
     padding: 24,
     backgroundColor: "#fff",
   },
+  closeButton: { position: "absolute", top: 56, left: 20, padding: 8 },
+  closeText: { fontSize: 22, color: "#64748B" },
   title: {
     fontSize: 24,
     fontWeight: "600",

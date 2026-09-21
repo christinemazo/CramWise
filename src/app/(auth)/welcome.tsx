@@ -4,8 +4,18 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 export default function Welcome() {
   const router = useRouter();
 
+  function close() {
+    // Go back to wherever the user opened this from (Settings).
+    if (router.canGoBack()) router.back();
+    else router.replace("/");
+  }
+
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.closeButton} onPress={close}>
+        <Text style={styles.closeText}>✕</Text>
+      </TouchableOpacity>
+
       <Text style={styles.brandName}>CramWise</Text>
 
       <Text style={styles.title}>The best way to study.</Text>
@@ -23,6 +33,10 @@ export default function Welcome() {
           Have an account? <Text style={styles.loginBold}>Log in</Text>
         </Text>
       </Link>
+
+      <TouchableOpacity style={styles.laterLink} onPress={close}>
+        <Text style={styles.laterText}>Maybe later</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -35,6 +49,8 @@ const styles = StyleSheet.create({
     padding: 24,
     backgroundColor: "#fff",
   },
+  closeButton: { position: "absolute", top: 56, left: 20, padding: 8 },
+  closeText: { fontSize: 22, color: "#64748B" },
   brandName: {
     fontSize: 40,
     fontWeight: "800",
@@ -61,4 +77,6 @@ const styles = StyleSheet.create({
   loginLink: { marginTop: 8 },
   loginText: { fontSize: 15, color: "#333" },
   loginBold: { fontWeight: "700", color: "#208AEF" },
+  laterLink: { marginTop: 28, padding: 8 },
+  laterText: { fontSize: 15, color: "#64748B", fontWeight: "600" },
 });

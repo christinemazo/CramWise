@@ -1,21 +1,16 @@
-import { useRouter } from "expo-router";
-import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    View
-} from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useAuth } from "../../contexts/AuthContext";
 
 export default function Home() {
-  const router = useRouter();
   const { session } = useAuth();
-  const email = session?.user?.email ?? "there";
+  const email = session?.user?.email ?? null;
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.greeting}>Welcome back</Text>
-      <Text style={styles.email}>{email}</Text>
+      <Text style={styles.greeting}>{email ? "Welcome back" : "Welcome"}</Text>
+      <Text style={styles.email}>
+        {email ?? "Studying offline — no account needed"}
+      </Text>
 
       <Text style={styles.sectionLabel}>Get started</Text>
       <View style={styles.card}>
