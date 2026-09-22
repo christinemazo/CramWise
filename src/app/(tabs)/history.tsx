@@ -3,11 +3,13 @@ import { StyleSheet, Text, View } from "react-native";
 export default function History() {
   return (
     <View style={styles.container}>
-      <Text style={styles.emoji}>🕓</Text>
-      <Text style={styles.title}>No study history yet</Text>
-      <Text style={styles.body}>
-        Decks and quizzes you've completed will show up here.
-      </Text>
+      <View style={styles.card}>
+        <Text style={styles.emoji}>🕓</Text>
+        <Text style={styles.title}>No study history yet</Text>
+        <Text style={styles.body}>
+          Completed decks and quiz sessions will show up here so you can track what you have reviewed.
+        </Text>
+      </View>
     </View>
   );
 }
@@ -15,18 +17,33 @@ export default function History() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0F172A",
+    backgroundColor: "#09111E",
     justifyContent: "center",
     alignItems: "center",
     padding: 24,
   },
-  emoji: { fontSize: 40, marginBottom: 16 },
+  card: {
+    width: "100%",
+    maxWidth: 420,
+    backgroundColor: "#101B2D",
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: "#1D2C45",
+    padding: 28,
+    alignItems: "center",
+  },
+  emoji: { fontSize: 42, marginBottom: 16 },
   title: {
-    color: "#fff",
-    fontSize: 20,
+    color: "#F8FBFF",
+    fontSize: 24,
     fontWeight: "700",
     textAlign: "center",
-    marginBottom: 8,
+    marginBottom: 10,
   },
-  body: { color: "#9CA3AF", fontSize: 14, textAlign: "center" },
+  body: {
+    color: "#A7B7D1",
+    fontSize: 15,
+    lineHeight: 22,
+    textAlign: "center",
+  },
 });

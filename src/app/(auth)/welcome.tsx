@@ -5,7 +5,6 @@ export default function Welcome() {
   const router = useRouter();
 
   function close() {
-    // Go back to wherever the user opened this from (Settings).
     if (router.canGoBack()) router.back();
     else router.replace("/");
   }
@@ -16,27 +15,28 @@ export default function Welcome() {
         <Text style={styles.closeText}>✕</Text>
       </TouchableOpacity>
 
-      <Text style={styles.brandName}>CramWise</Text>
+      <View style={styles.panel}>
+        <Text style={styles.brandName}>CramWise</Text>
+        <Text style={styles.title}>The best way to study.</Text>
+        <Text style={styles.subtitle}>Build momentum, one smart session at a time.</Text>
 
-      <Text style={styles.title}>The best way to study.</Text>
-      <Text style={styles.subtitle}>Sign up for free.</Text>
+        <TouchableOpacity
+          style={styles.emailButton}
+          onPress={() => router.push("/sign-up")}
+        >
+          <Text style={styles.emailButtonText}>Sign up with email</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.emailButton}
-        onPress={() => router.push("/sign-up")}
-      >
-        <Text style={styles.emailButtonText}>Sign up with email</Text>
-      </TouchableOpacity>
+        <Link href="/sign-in" style={styles.loginLink}>
+          <Text style={styles.loginText}>
+            Have an account? <Text style={styles.loginBold}>Log in</Text>
+          </Text>
+        </Link>
 
-      <Link href="/sign-in" style={styles.loginLink}>
-        <Text style={styles.loginText}>
-          Have an account? <Text style={styles.loginBold}>Log in</Text>
-        </Text>
-      </Link>
-
-      <TouchableOpacity style={styles.laterLink} onPress={close}>
-        <Text style={styles.laterText}>Maybe later</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.laterLink} onPress={close}>
+          <Text style={styles.laterText}>Maybe later</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -47,36 +47,63 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 24,
-    backgroundColor: "#fff",
+    backgroundColor: "#EDF4FF",
   },
-  closeButton: { position: "absolute", top: 56, left: 20, padding: 8 },
-  closeText: { fontSize: 22, color: "#64748B" },
+  panel: {
+    width: "100%",
+    maxWidth: 420,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 28,
+    padding: 28,
+    shadowColor: "#183B7A",
+    shadowOpacity: 0.12,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 12 },
+  },
+  closeButton: {
+    position: "absolute",
+    top: 56,
+    left: 20,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#EAF0FF",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  closeText: { fontSize: 20, color: "#3A4A61", fontWeight: "700" },
   brandName: {
     fontSize: 40,
     fontWeight: "800",
-    color: "#208AEF",
-    marginBottom: 48,
+    color: "#2557D6",
+    letterSpacing: -0.8,
+    marginBottom: 24,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "800",
+    color: "#101828",
     letterSpacing: -0.5,
   },
-  title: { fontSize: 24, fontWeight: "700", textAlign: "center" },
   subtitle: {
-    fontSize: 24,
-    fontWeight: "700",
-    textAlign: "center",
-    marginBottom: 40,
+    fontSize: 15,
+    lineHeight: 22,
+    color: "#5B6B82",
+    marginTop: 8,
+    marginBottom: 28,
   },
   emailButton: {
     width: "100%",
-    backgroundColor: "#208AEF",
-    borderRadius: 30,
-    padding: 16,
+    backgroundColor: "#2557D6",
+    borderRadius: 16,
+    paddingVertical: 16,
     alignItems: "center",
-    marginBottom: 24,
+    marginBottom: 18,
   },
   emailButtonText: { color: "#fff", fontWeight: "700", fontSize: 16 },
-  loginLink: { marginTop: 8 },
-  loginText: { fontSize: 15, color: "#333" },
-  loginBold: { fontWeight: "700", color: "#208AEF" },
-  laterLink: { marginTop: 28, padding: 8 },
+  loginLink: { marginTop: 8, alignItems: "center" },
+  loginText: { fontSize: 15, color: "#334155" },
+  loginBold: { fontWeight: "700", color: "#2557D6" },
+  laterLink: { marginTop: 22, alignItems: "center" },
   laterText: { fontSize: 15, color: "#64748B", fontWeight: "600" },
 });

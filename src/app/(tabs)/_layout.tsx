@@ -6,9 +6,20 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#208AEF",
-        tabBarInactiveTintColor: "#9CA3AF",
-        tabBarStyle: { backgroundColor: "#0F172A", borderTopColor: "#1E293B" },
+        tabBarActiveTintColor: "#D5B77A",
+        tabBarInactiveTintColor: "#B3A5B7",
+        tabBarStyle: {
+          backgroundColor: "#17151B",
+          borderTopColor: "#3A3044",
+          borderTopWidth: 1,
+          height: 78,
+          paddingBottom: 10,
+          paddingTop: 10,
+        },
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: "600",
+        },
       }}
     >
       <Tabs.Screen
@@ -32,9 +43,9 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="create"
         options={{
-          title: "",
-          tabBarIcon: () => (
-            <Ionicons name="add-circle" size={40} color="#208AEF" />
+          title: "Create",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="add-circle" size={34} color={color} />
           ),
         }}
       />
