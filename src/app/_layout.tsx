@@ -1,15 +1,15 @@
 import { Stack } from "expo-router";
-import { Quicksand_400Regular, Quicksand_500Medium, Quicksand_600SemiBold, Quicksand_700Bold } from "@expo-google-fonts/quicksand";
+import { Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold, Nunito_800ExtraBold } from "@expo-google-fonts/nunito";
 import { useFonts } from "expo-font";
 import { AuthProvider } from "../contexts/AuthContext";
 import { ThemeProvider } from "../contexts/ThemeContext";
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
-    Quicksand_400Regular,
-    Quicksand_500Medium,
-    Quicksand_600SemiBold,
-    Quicksand_700Bold,
+    Nunito_400Regular,
+    Nunito_500Medium,
+    Nunito_600SemiBold,
+    Nunito_800ExtraBold,
   });
 
   if (!fontsLoaded) {

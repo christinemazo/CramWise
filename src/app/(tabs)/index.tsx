@@ -1,27 +1,24 @@
-import { Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
+import { Pressable, ScrollView, Text, View, useWindowDimensions } from "react-native";
+import { useRouter } from "expo-router";
 import { useAuth } from "../../contexts/AuthContext";
 import { useTheme } from "../../contexts/ThemeContext";
+import { styles } from "./index.styles";
 
 const stats = [
-  { label: "Streak", value: "12d" },
-  { label: "Accuracy", value: "89%" },
-  { label: "Focus", value: "20m" },
+  { label: "Streak", value: "12d", icon: "flame-outline" as const, tone: "#FFE3A7" },
+  { label: "Accuracy", value: "89%", icon: "trending-up-outline" as const, tone: "#D9F4E7" },
+  { label: "Cards due", value: "12", icon: "albums-outline" as const, tone: "#DDE7FF" },
 ];
 
-const actions = [
-  { title: "Upload notes", subtitle: "PDF • PPT • DOCX", token: "UP" },
-  { title: "Generate quiz", subtitle: "MCQ • True / False", token: "QZ" },
-  { title: "Flashcards", subtitle: "Review • Recall", token: "FC" },
-  { title: "Timer mode", subtitle: "15 • 30 • 45 min", token: "TM" },
+const reviewQueue = [
+  { title: "Biology review", detail: "12 cards ready", icon: "leaf-outline" as const, tone: "#D9F4E7" },
+  { title: "Spanish verbs", detail: "8 cards ready", icon: "language-outline" as const, tone: "#DDE7FF" },
 ];
 
-const questionTypes = [
-  "Multiple choice",
-  "True / False",
-  "Identification",
-  "Fill blanks",
-  "Matching",
+const publishedSets = [
+  { title: "Biology fundamentals", detail: "24 questions · Published today" },
+  { title: "Spanish verbs", detail: "18 flashcards · Published yesterday" },
 ];
 
 const recentScores = [
@@ -30,13 +27,22 @@ const recentScores = [
   { title: "History recap", score: "95%", time: "2 days ago" },
 ];
 
+const quickLinks = [
+  { label: "Start review", icon: "play-outline" as const, tone: "#F08C45", route: "/create" as const },
+  { label: "Create set", icon: "add-outline" as const, tone: "#41A77C", route: "/create" as const },
+  { label: "See scores", icon: "trophy-outline" as const, tone: "#5D8FE8", route: "/scores" as const },
+];
+
 export default function Home() {
+  const router = useRouter();
   const { session } = useAuth();
   const { actualTheme, setTheme } = useTheme();
   const isDark = actualTheme === "dark";
   const email = session?.user?.email ?? null;
   const firstName = email ? email.split("@")[0].split(".")[0] : "there";
-  const isCompact = Dimensions.get("window").width < 380;
+  const { width } = useWindowDimensions();
+  const isCompact = width < 380;
+  const isWide = width >= 900;
 
   const palette = isDark
     ? {
@@ -48,415 +54,198 @@ export default function Home() {
         text: "#FFF9F0",
         muted: "#D0C4D2",
         secondary: "#B3A5B7",
-        accent: "#D5B77A",
-        accentCool: "#A9C7A1",
-        accentSoft: "#403342",
-        toggle: "#F4EBDD",
-        toggleText: "#29212B",
+        accent: "#F08C45",
+        accentCool: "#41A77C",
+        accentSoft: "#FFF0C9",
+        iconOnSoft: "#17151B",
+        iconOnAccent: "#17151B",
+        iconOnHero: "#F08C45",
+        toggle: "#24202A",
+        toggleText: "#FFF9F0",
+        pageGlow: "#1B1520",
       }
     : {
-        background: "#FBF7F1",
+        background: "#FFFEFA",
         panel: "#FFFFFF",
-        panelStrong: "#F4E9DE",
-        panelSoft: "#FCF9F5",
-        border: "#E9DED4",
-        text: "#302A36",
-        muted: "#6F6873",
-        secondary: "#817782",
-        accent: "#A06E35",
-        accentCool: "#769A6D",
-        accentSoft: "#F3E4D6",
-        toggle: "#302A36",
-        toggleText: "#FFF9F0",
+        panelStrong: "#FFE3A7",
+        panelSoft: "#F1F5FF",
+        border: "#ECE8DF",
+        text: "#171717",
+        muted: "#655F59",
+        secondary: "#867E75",
+        accent: "#F08C45",
+        accentCool: "#41A77C",
+        accentSoft: "#FFF0C9",
+        iconOnSoft: "#171717",
+        iconOnAccent: "#171717",
+        iconOnHero: "#171717",
+        toggle: "#171717",
+        toggleText: "#FFFFFF",
+        pageGlow: "#FFF7DF",
       };
 
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: palette.background }]}
-      contentContainerStyle={styles.content}
+      contentContainerStyle={[styles.content, isWide && styles.contentWide]}
     >
       <View style={styles.topbar}>
         <View>
-          <Text style={[styles.eyebrow, { color: palette.accent }]}>Study ready</Text>
+          <Text style={[styles.greetingKicker, { color: palette.secondary }]}>GOOD AFTERNOON</Text>
           <Text style={[styles.greeting, { color: palette.text }]}>
             {email ? `Welcome back, ${firstName}` : "Welcome"}
           </Text>
         </View>
 
         <Pressable
+          accessibilityLabel="Toggle light and dark mode"
+          accessibilityRole="switch"
+          accessibilityState={{ checked: isDark }}
           onPress={() => setTheme(isDark ? "light" : "dark")}
-          style={[
-            styles.themeButton,
-            { backgroundColor: palette.toggle, borderColor: palette.border },
-          ]}
+          style={[styles.themeToggle, { backgroundColor: palette.toggle, borderColor: palette.border }]}
         >
-          <Text style={[styles.themeButtonText, { color: palette.toggleText }]}>
-            {isDark ? "Light" : "Dark"}
-          </Text>
+          <Text style={[styles.themeToggleLabel, styles.themeToggleLight, { color: isDark ? palette.secondary : palette.toggleText }]}>Light</Text>
+          <Text style={[styles.themeToggleLabel, styles.themeToggleDark, { color: isDark ? palette.toggleText : palette.secondary }]}>Dark</Text>
+          <View style={[styles.themeToggleThumb, isDark ? styles.themeToggleThumbRight : styles.themeToggleThumbLeft, { backgroundColor: isDark ? palette.accent : palette.accentCool }]}>
+            <Ionicons name={isDark ? "moon" : "sunny"} size={13} color={palette.iconOnAccent} />
+          </View>
         </Pressable>
       </View>
 
-      <LinearGradient
-        colors={isDark ? ["#49344A", "#34283D", "#24202A"] : ["#FFF1D9", "#F4E9DE", "#EDE3F0"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[
-          styles.heroCard,
-          { borderColor: palette.border },
-        ]}
-      >
-        <View style={styles.heroHeader}>
-          <Text
-            style={[styles.badge, { backgroundColor: palette.accentSoft, color: palette.accent }]}
-          >
-            12-day streak
-          </Text>
-          <Text style={[styles.heroChip, { color: palette.muted }]}>Daily goal</Text>
+      <View style={[styles.heroCard, { backgroundColor: isDark ? "#30273A" : "#6542C7" }]}>
+        <View style={styles.heroKickerRow}>
+          <Ionicons name="leaf-outline" size={16} color="#FFE3A7" />
+          <Text style={[styles.heroKicker, { color: "#FFE3A7" }]}>THIS WEEK IN STUDY</Text>
         </View>
-
-        <Text style={[styles.heroTitle, { color: palette.text }]}>Finish a 20 minute quiz challenge</Text>
-        <Text style={[styles.heroSubtitle, { color: palette.muted }]}>
-          Keep your momentum with short review sessions, question variety, and smarter recall cycles.
+        <Text style={[styles.heroTitle, { color: "#FFFFFF" }]}>Keep your biology streak alive</Text>
+        <Text style={[styles.heroSubtitle, { color: "#F0EAFE" }]}>
+          12 flashcards are ready for a quick review today.
         </Text>
 
         <View style={[styles.heroActions, isCompact && styles.heroActionsCompact]}>
-          <Pressable style={[styles.primaryButton, { backgroundColor: palette.accentCool }]}>
-            <Text style={styles.primaryButtonText}>Start quiz</Text>
+          <Pressable
+            onPress={() => router.push("/create")}
+            style={[
+              styles.primaryButton,
+              { backgroundColor: "#41A77C" },
+            ]}
+          >
+            <Text style={[styles.primaryButtonText, { color: "#FFFFFF" }]}>
+              Start review
+            </Text>
           </Pressable>
           <Pressable
+            onPress={() => router.push("/history")}
             style={[
               styles.secondaryButton,
-              { backgroundColor: isDark ? "rgba(255,249,240,0.12)" : "rgba(255,255,255,0.78)", borderColor: palette.border },
+              { backgroundColor: "rgba(255,255,255,0.14)", borderColor: "rgba(255,255,255,0.26)" },
             ]}
           >
-            <Text style={[styles.secondaryButtonText, { color: palette.text }]}>Daily review</Text>
+            <Text style={[styles.secondaryButtonText, { color: "#FFFFFF" }]}>Review history</Text>
           </Pressable>
         </View>
-      </LinearGradient>
+      </View>
 
-      <View style={styles.statsRow}>
-        {stats.map((stat) => (
+      <View style={styles.quickLinks}>
+        {quickLinks.map((link) => (
+          <Pressable key={link.label} onPress={() => router.push(link.route)} style={[styles.quickLink, { backgroundColor: link.tone }]}>
+            <Ionicons name={link.icon} size={22} color="#FFFFFF" />
+            <Text style={styles.quickLinkText}>{link.label}</Text>
+          </Pressable>
+        ))}
+      </View>
+
+      <View style={styles.progressHeader}>
+        <Text style={[styles.progressTitle, { color: palette.text }]}>Your progress</Text>
+        <Text style={[styles.progressUpdated, { color: palette.secondary }]}>Updated today</Text>
+      </View>
+
+      <View style={[styles.statsRow, { borderTopColor: palette.border, borderBottomColor: palette.border }]}>
+        {stats.map((stat, index) => (
           <View
             key={stat.label}
-            style={[
-              styles.statCard,
-              { backgroundColor: palette.panel, borderColor: palette.border },
-            ]}
+            style={[styles.statCard, index < stats.length - 1 && styles.statCardDivider, { borderRightColor: palette.border }]}
           >
+            <View style={[styles.statIcon, { backgroundColor: isDark ? palette.accentSoft : stat.tone }]}>
+              <Ionicons name={stat.icon} size={15} color={palette.iconOnSoft} />
+            </View>
             <Text style={[styles.statValue, { color: palette.text }]}>{stat.value}</Text>
             <Text style={[styles.statLabel, { color: palette.secondary }]}>{stat.label}</Text>
           </View>
         ))}
       </View>
 
-      <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionLabel, { color: palette.secondary }]}>Quick actions</Text>
-      </View>
-
-      <View style={styles.actionGrid}>
-        {actions.map((action) => (
-          <Pressable
-            key={action.title}
-            style={[
-              styles.actionCard,
-              { backgroundColor: palette.panel, borderColor: palette.border },
-            ]}
-          >
-            <View style={[styles.token, { backgroundColor: palette.accentSoft }]}>
-              <Text style={[styles.tokenText, { color: palette.accent }]}>{action.token}</Text>
-            </View>
-            <Text style={[styles.actionTitle, { color: palette.text }]}>{action.title}</Text>
-            <Text style={[styles.actionSubtitle, { color: palette.muted }]}>{action.subtitle}</Text>
-          </Pressable>
-        ))}
-      </View>
-
-      <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionLabel, { color: palette.secondary }]}>Question types</Text>
-      </View>
-
-      <View style={styles.pillGrid}>
-        {questionTypes.map((type) => (
-          <View
-            key={type}
-            style={[
-              styles.pill,
-              { backgroundColor: palette.panelSoft, borderColor: palette.border },
-            ]}
-          >
-            <Text style={[styles.pillText, { color: palette.text }]}>{type}</Text>
+      <View style={[styles.desktopColumns, isWide && styles.desktopColumnsWide]}>
+        <View style={styles.primaryColumn}>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionLabel, { color: palette.text }]}>Published sets</Text>
+            <Ionicons name="checkmark-circle" size={18} color={palette.accentCool} />
           </View>
-        ))}
-      </View>
 
-      <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionLabel, { color: palette.secondary }]}>Recent scores</Text>
-        <Text style={[styles.linkText, { color: palette.accent }]}>View all</Text>
-      </View>
-
-      <View
-        style={[
-          styles.scoreCard,
-          { backgroundColor: palette.panel, borderColor: palette.border },
-        ]}
-      >
-        {recentScores.map((item) => (
-          <View key={item.title} style={styles.scoreRow}>
-            <View>
-              <Text style={[styles.scoreTitle, { color: palette.text }]}>{item.title}</Text>
-              <Text style={[styles.scoreMeta, { color: palette.muted }]}>{item.time}</Text>
-            </View>
-            <Text style={[styles.scoreValue, { color: palette.accent }]}>{item.score}</Text>
+          <View style={styles.publishedList}>
+            {publishedSets.map((item) => (
+              <View key={item.title} style={[styles.publishedRow, { borderBottomColor: palette.border }]}>
+                <View style={[styles.publishedMark, { backgroundColor: isDark ? palette.accentSoft : "#D9F4E7" }]}>
+                  <Ionicons name="checkmark" size={16} color={palette.iconOnSoft} />
+                </View>
+                <View style={styles.reviewCopy}>
+                  <Text style={[styles.scoreTitle, { color: palette.text }]}>{item.title}</Text>
+                  <Text style={[styles.scoreMeta, { color: palette.muted }]}>{item.detail}</Text>
+                </View>
+                <Text style={[styles.publishedLabel, { color: palette.accentCool }]}>PUBLISHED</Text>
+              </View>
+            ))}
           </View>
-        ))}
+        </View>
+
+        <View style={styles.secondaryColumn}>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionLabel, { color: palette.text }]}>Ready to review</Text>
+            <Pressable onPress={() => router.push("/create")}>
+              <Text style={[styles.linkText, { color: palette.accent }]}>New set</Text>
+            </Pressable>
+          </View>
+
+          <View style={styles.reviewList}>
+            {reviewQueue.map((item) => (
+              <Pressable
+                key={item.title}
+                onPress={() => router.push("/create")}
+                style={[styles.reviewRow, { borderBottomColor: palette.border }]}
+              >
+                <View style={[styles.reviewIcon, { backgroundColor: isDark ? palette.accentSoft : item.tone }]}>
+                  <Ionicons name={item.icon} size={20} color={palette.iconOnSoft} />
+                </View>
+                <View style={styles.reviewCopy}>
+                  <Text style={[styles.scoreTitle, { color: palette.text }]}>{item.title}</Text>
+                  <Text style={[styles.scoreMeta, { color: palette.muted }]}>{item.detail}</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={18} color={palette.text} />
+              </Pressable>
+            ))}
+          </View>
+
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionLabel, { color: palette.text }]}>Recent scores</Text>
+            <Pressable onPress={() => router.push("/scores")}>
+              <Text style={[styles.linkText, { color: palette.accent }]}>View all</Text>
+            </Pressable>
+          </View>
+
+          <View style={[styles.scoreCard, { borderTopColor: palette.border }]}>
+            {recentScores.map((item) => (
+              <View key={item.title} style={styles.scoreRow}>
+                <View>
+                  <Text style={[styles.scoreTitle, { color: palette.text }]}>{item.title}</Text>
+                  <Text style={[styles.scoreMeta, { color: palette.muted }]}>{item.time}</Text>
+                </View>
+                <Text style={[styles.scoreValue, { color: palette.accent }]}>{item.score}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
       </View>
     </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  content: {
-    paddingHorizontal: 20,
-    paddingTop: 52,
-    paddingBottom: 48,
-  },
-  topbar: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 18,
-  },
-  eyebrow: {
-    fontFamily: "Quicksand_700Bold",
-    fontSize: 11,
-    fontWeight: "700",
-    letterSpacing: 0.8,
-    textTransform: "uppercase",
-  },
-  greeting: {
-    fontFamily: "Quicksand_700Bold",
-    fontSize: 30,
-    fontWeight: "800",
-    letterSpacing: -0.7,
-    marginTop: 4,
-  },
-  themeButton: {
-    borderWidth: 1,
-    borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-  },
-  themeButtonText: {
-    fontFamily: "Quicksand_700Bold",
-    fontSize: 12,
-    fontWeight: "700",
-    textTransform: "uppercase",
-  },
-  heroCard: {
-    borderRadius: 26,
-    padding: 24,
-    borderWidth: 1,
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 26,
-    shadowOffset: { width: 0, height: 14 },
-    elevation: 10,
-  },
-  heroHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 18,
-  },
-  badge: {
-    fontFamily: "Quicksand_700Bold",
-    alignSelf: "flex-start",
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 999,
-    fontSize: 11,
-    fontWeight: "700",
-    letterSpacing: 0.5,
-    textTransform: "uppercase",
-  },
-  heroChip: {
-    fontFamily: "Quicksand_600SemiBold",
-    fontSize: 12,
-    fontWeight: "600",
-  },
-  heroTitle: {
-    fontFamily: "Quicksand_700Bold",
-    fontSize: 28,
-    fontWeight: "800",
-    letterSpacing: -0.6,
-    marginBottom: 8,
-  },
-  heroSubtitle: {
-    fontFamily: "Quicksand_400Regular",
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  heroActions: {
-    flexDirection: "row",
-    gap: 10,
-    marginTop: 22,
-  },
-  heroActionsCompact: {
-    flexDirection: "column",
-  },
-  primaryButton: {
-    borderRadius: 14,
-    paddingVertical: 14,
-    paddingHorizontal: 18,
-    flex: 1,
-    minHeight: 48,
-    justifyContent: "center",
-  },
-  primaryButtonText: {
-    fontFamily: "Quicksand_700Bold",
-    color: "#FFFFFF",
-    fontWeight: "700",
-    textAlign: "center",
-  },
-  secondaryButton: {
-    borderRadius: 14,
-    borderWidth: 1,
-    paddingVertical: 14,
-    paddingHorizontal: 18,
-    flex: 1,
-    minHeight: 48,
-    justifyContent: "center",
-  },
-  secondaryButtonText: {
-    fontFamily: "Quicksand_700Bold",
-    fontWeight: "700",
-    textAlign: "center",
-  },
-  statsRow: {
-    flexDirection: "row",
-    gap: 12,
-    marginTop: 24,
-    marginBottom: 24,
-  },
-  statCard: {
-    flex: 1,
-    borderRadius: 16,
-    borderWidth: 1,
-    padding: 15,
-  },
-  statValue: {
-    fontFamily: "Quicksand_700Bold",
-    fontSize: 22,
-    fontWeight: "800",
-    letterSpacing: -0.5,
-  },
-  statLabel: {
-    fontFamily: "Quicksand_700Bold",
-    fontSize: 11,
-    marginTop: 4,
-    fontWeight: "700",
-    textTransform: "uppercase",
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 12,
-    marginBottom: 14,
-  },
-  sectionLabel: {
-    fontFamily: "Quicksand_700Bold",
-    fontSize: 12,
-    fontWeight: "700",
-    letterSpacing: 0.6,
-    textTransform: "uppercase",
-  },
-  linkText: {
-    fontFamily: "Quicksand_700Bold",
-    fontSize: 12,
-    fontWeight: "700",
-  },
-  actionGrid: {
-    gap: 14,
-  },
-  actionCard: {
-    borderRadius: 16,
-    borderWidth: 1,
-    padding: 17,
-    minHeight: 116,
-  },
-  token: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 14,
-  },
-  tokenText: {
-    fontFamily: "Quicksand_700Bold",
-    fontSize: 12,
-    fontWeight: "800",
-    letterSpacing: 0.8,
-  },
-  actionTitle: {
-    fontFamily: "Quicksand_700Bold",
-    fontSize: 18,
-    fontWeight: "700",
-    marginBottom: 4,
-  },
-  actionSubtitle: {
-    fontFamily: "Quicksand_400Regular",
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  pillGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-    marginBottom: 12,
-  },
-  pill: {
-    borderRadius: 999,
-    borderWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  pillText: {
-    fontFamily: "Quicksand_600SemiBold",
-    fontSize: 12,
-    fontWeight: "600",
-  },
-  scoreCard: {
-    borderRadius: 20,
-    borderWidth: 1,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  scoreRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(148,163,184,0.22)",
-  },
-  scoreTitle: {
-    fontFamily: "Quicksand_700Bold",
-    fontSize: 15,
-    fontWeight: "700",
-  },
-  scoreMeta: {
-    fontFamily: "Quicksand_400Regular",
-    fontSize: 12,
-    marginTop: 3,
-  },
-  scoreValue: {
-    fontFamily: "Quicksand_700Bold",
-    fontSize: 18,
-    fontWeight: "800",
-  },
-});
