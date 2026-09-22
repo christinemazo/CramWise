@@ -1,7 +1,6 @@
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import {
-  ActivityIndicator,
   Alert,
   StyleSheet,
   Text,
@@ -9,31 +8,20 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { supabase } from "../../lib/supabase";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function SignIn() {
   const router = useRouter();
+  const { signIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  async function handleSignIn() {
+  function handleSignIn() {
     if (!email || !password) {
       Alert.alert("Missing info", "Enter an email and password.");
       return;
     }
-    setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    setLoading(false);
-
-    if (error) {
-      Alert.alert("Sign in failed", error.message);
-      return;
-    }
-    // Nothing redirects automatically any more, so close the auth flow here.
+    signIn(email);
     router.replace("/");
   }
 
@@ -66,16 +54,8 @@ export default function SignIn() {
         onChangeText={setPassword}
       />
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleSignIn}
-        disabled={loading}
-      >
-        {loading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.buttonText}>Sign In</Text>
-        )}
+      <TouchableOpacity style={styles.button} onPress={handleSignIn}>
+        <Text style={styles.buttonText}>Sign In</Text>
       </TouchableOpacity>
 
       <Link href="/sign-up" style={styles.link}>

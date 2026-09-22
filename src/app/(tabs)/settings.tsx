@@ -3,12 +3,11 @@ import { useState } from "react";
 import { Alert, Modal, Pressable, ScrollView, Text, View } from "react-native";
 import { useAuth } from "../../contexts/AuthContext";
 import { ThemeMode, useTheme } from "../../contexts/ThemeContext";
-import { supabase } from "../../lib/supabase";
 
 export default function SettingsScreen() {
   const router = useRouter();
   const { theme, actualTheme, setTheme } = useTheme();
-  const { session } = useAuth();
+  const { session, signOut } = useAuth();
   const [showAbout, setShowAbout] = useState(false);
   const isDark = actualTheme === "dark";
   const colors = isDark
@@ -41,10 +40,7 @@ export default function SettingsScreen() {
       {
         text: "Sign out",
         style: "destructive",
-        onPress: async () => {
-          const { error } = await supabase.auth.signOut();
-          if (error) Alert.alert("Sign out failed", error.message);
-        },
+        onPress: () => signOut(),
       },
     ]);
   }

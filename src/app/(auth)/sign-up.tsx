@@ -1,7 +1,6 @@
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import {
-  ActivityIndicator,
   Alert,
   StyleSheet,
   Text,
@@ -9,39 +8,21 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { supabase } from "../../lib/supabase";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function SignUp() {
   const router = useRouter();
+  const { signIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  async function handleSignUp() {
+  function handleSignUp() {
     if (!email || !password) {
       Alert.alert("Missing info", "Enter an email and password.");
       return;
     }
-    setLoading(true);
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    setLoading(false);
-
-    if (error) {
-      Alert.alert("Sign up failed", error.message);
-      return;
-    }
-
-    if (data.session) {
-      // Email confirmation is off: the user is already signed in.
-      router.replace("/");
-      return;
-    }
-
-    Alert.alert(
-      "Check your email",
-      "Confirm your address to finish signing up.",
-      [{ text: "OK", onPress: () => router.replace("/") }],
-    );
+    signIn(email);
+    router.replace("/");
   }
 
   return (
@@ -73,16 +54,8 @@ export default function SignUp() {
         onChangeText={setPassword}
       />
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleSignUp}
-        disabled={loading}
-      >
-        {loading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.buttonText}>Sign Up</Text>
-        )}
+      <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+        <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
 
       <Link href="/sign-in" style={styles.link}>
