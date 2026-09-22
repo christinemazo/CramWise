@@ -1,6 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Pressable, ScrollView, Text, View, useWindowDimensions } from "react-native";
-import { useRouter } from "expo-router";
+import { ScrollView, Text, View, useWindowDimensions } from "react-native";
 import { useAuth } from "../../contexts/AuthContext";
 import { useTheme } from "../../contexts/ThemeContext";
 import { styles } from "./index.styles";
@@ -28,15 +27,14 @@ const recentScores = [
 ];
 
 const quickLinks = [
-  { label: "Start review", icon: "play-outline" as const, tone: "#F08C45", route: "/create" as const },
-  { label: "Create set", icon: "add-outline" as const, tone: "#41A77C", route: "/create" as const },
-  { label: "See scores", icon: "trophy-outline" as const, tone: "#5D8FE8", route: "/scores" as const },
+  { label: "Start review", icon: "play-outline" as const, tone: "#F08C45" },
+  { label: "Create set", icon: "add-outline" as const, tone: "#41A77C" },
+  { label: "See scores", icon: "trophy-outline" as const, tone: "#5D8FE8" },
 ];
 
 export default function Home() {
-  const router = useRouter();
   const { session } = useAuth();
-  const { actualTheme, setTheme } = useTheme();
+  const { actualTheme } = useTheme();
   const isDark = actualTheme === "dark";
   const email = session?.user?.email ?? null;
   const firstName = email ? email.split("@")[0].split(".")[0] : "there";
@@ -97,11 +95,7 @@ export default function Home() {
           </Text>
         </View>
 
-        <Pressable
-          accessibilityLabel="Toggle light and dark mode"
-          accessibilityRole="switch"
-          accessibilityState={{ checked: isDark }}
-          onPress={() => setTheme(isDark ? "light" : "dark")}
+        <View
           style={[styles.themeToggle, { backgroundColor: palette.toggle, borderColor: palette.border }]}
         >
           <Text style={[styles.themeToggleLabel, styles.themeToggleLight, { color: isDark ? palette.secondary : palette.toggleText }]}>Light</Text>
@@ -109,7 +103,7 @@ export default function Home() {
           <View style={[styles.themeToggleThumb, isDark ? styles.themeToggleThumbRight : styles.themeToggleThumbLeft, { backgroundColor: isDark ? palette.accent : palette.accentCool }]}>
             <Ionicons name={isDark ? "moon" : "sunny"} size={13} color={palette.iconOnAccent} />
           </View>
-        </Pressable>
+        </View>
       </View>
 
       <View style={[styles.heroCard, { backgroundColor: isDark ? "#30273A" : "#6542C7" }]}>
@@ -123,8 +117,7 @@ export default function Home() {
         </Text>
 
         <View style={[styles.heroActions, isCompact && styles.heroActionsCompact]}>
-          <Pressable
-            onPress={() => router.push("/create")}
+          <View
             style={[
               styles.primaryButton,
               { backgroundColor: "#41A77C" },
@@ -133,25 +126,24 @@ export default function Home() {
             <Text style={[styles.primaryButtonText, { color: "#FFFFFF" }]}>
               Start review
             </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => router.push("/history")}
+          </View>
+          <View
             style={[
               styles.secondaryButton,
               { backgroundColor: "rgba(255,255,255,0.14)", borderColor: "rgba(255,255,255,0.26)" },
             ]}
           >
             <Text style={[styles.secondaryButtonText, { color: "#FFFFFF" }]}>Review history</Text>
-          </Pressable>
+          </View>
         </View>
       </View>
 
       <View style={styles.quickLinks}>
         {quickLinks.map((link) => (
-          <Pressable key={link.label} onPress={() => router.push(link.route)} style={[styles.quickLink, { backgroundColor: link.tone }]}>
+          <View key={link.label} style={[styles.quickLink, { backgroundColor: link.tone }]}>
             <Ionicons name={link.icon} size={22} color="#FFFFFF" />
             <Text style={styles.quickLinkText}>{link.label}</Text>
-          </Pressable>
+          </View>
         ))}
       </View>
 
@@ -201,16 +193,13 @@ export default function Home() {
         <View style={styles.secondaryColumn}>
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionLabel, { color: palette.text }]}>Ready to review</Text>
-            <Pressable onPress={() => router.push("/create")}>
-              <Text style={[styles.linkText, { color: palette.accent }]}>New set</Text>
-            </Pressable>
+            <Text style={[styles.linkText, { color: palette.accent }]}>New set</Text>
           </View>
 
           <View style={styles.reviewList}>
             {reviewQueue.map((item) => (
-              <Pressable
+              <View
                 key={item.title}
-                onPress={() => router.push("/create")}
                 style={[styles.reviewRow, { borderBottomColor: palette.border }]}
               >
                 <View style={[styles.reviewIcon, { backgroundColor: isDark ? palette.accentSoft : item.tone }]}>
@@ -221,15 +210,13 @@ export default function Home() {
                   <Text style={[styles.scoreMeta, { color: palette.muted }]}>{item.detail}</Text>
                 </View>
                 <Ionicons name="chevron-forward" size={18} color={palette.text} />
-              </Pressable>
+              </View>
             ))}
           </View>
 
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionLabel, { color: palette.text }]}>Recent scores</Text>
-            <Pressable onPress={() => router.push("/scores")}>
-              <Text style={[styles.linkText, { color: palette.accent }]}>View all</Text>
-            </Pressable>
+            <Text style={[styles.linkText, { color: palette.accent }]}>View all</Text>
           </View>
 
           <View style={[styles.scoreCard, { borderTopColor: palette.border }]}>
