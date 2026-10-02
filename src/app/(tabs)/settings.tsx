@@ -1,13 +1,9 @@
-import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Modal, Pressable, ScrollView, Text, View } from "react-native";
-import { useAuth } from "../../contexts/AuthContext";
 import { ThemeMode, useTheme } from "../../contexts/ThemeContext";
 
 export default function SettingsScreen() {
-  const router = useRouter();
   const { theme, actualTheme, setTheme } = useTheme();
-  const { session, signOut } = useAuth();
   const [showAbout, setShowAbout] = useState(false);
   const isDark = actualTheme === "dark";
   const colors = isDark
@@ -34,15 +30,9 @@ export default function SettingsScreen() {
     { label: "System Mode", value: "system" },
   ];
 
-  function confirmSignOut() {
-    Alert.alert("Sign out", "You can sign back in any time.", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Sign out",
-        style: "destructive",
-        onPress: () => signOut(),
-      },
-    ]);
+  // The sign-in / sign-up pages no longer exist, so these buttons only show a message.
+  function showComingSoon() {
+    Alert.alert("Coming soon", "Accounts aren't available yet.");
   }
 
   return (
@@ -85,98 +75,55 @@ export default function SettingsScreen() {
             ACCOUNT
           </Text>
 
-          {session ? (
-            <View
+          <View
+            style={{
+              backgroundColor: colors.card,
+              borderRadius: 16,
+              borderWidth: 1,
+              borderColor: colors.border,
+              padding: 16,
+              marginBottom: 24,
+            }}
+          >
+            <Text
+              style={{ color: colors.text, fontSize: 17, fontWeight: "700" }}
+            >
+              Do you want to create an account?
+            </Text>
+            <Text
               style={{
-                backgroundColor: colors.card,
-                borderRadius: 16,
-                borderWidth: 1,
-                borderColor: colors.border,
-                padding: 16,
-                marginBottom: 24,
+                color: colors.muted,
+                fontSize: 14,
+                lineHeight: 20,
+                marginTop: 6,
               }}
             >
-              <Text style={{ color: colors.muted, fontSize: 13 }}>
-                Signed in as
-              </Text>
-              <Text
-                style={{
-                  color: colors.text,
-                  fontSize: 16,
-                  fontWeight: "600",
-                  marginTop: 2,
-                }}
-              >
-                {session.user?.email}
-              </Text>
-              <Pressable
-                onPress={confirmSignOut}
-                style={{
-                  alignSelf: "flex-start",
-                  marginTop: 14,
-                  paddingHorizontal: 16,
-                  paddingVertical: 9,
-                  borderRadius: 10,
-                  borderWidth: 1,
-                  borderColor: "#EF4444",
-                }}
-              >
-                <Text style={{ color: "#EF4444", fontWeight: "700" }}>
-                  Sign out
-                </Text>
-              </Pressable>
-            </View>
-          ) : (
-            <View
+              CramWise works without one. Sign up to back up your decks and sync
+              them across devices.
+            </Text>
+            <Pressable
+              onPress={showComingSoon}
               style={{
-                backgroundColor: colors.card,
-                borderRadius: 16,
-                borderWidth: 1,
-                borderColor: colors.border,
-                padding: 16,
-                marginBottom: 24,
+                backgroundColor: colors.accent,
+                borderRadius: 10,
+                marginTop: 14,
+                paddingVertical: 12,
+                alignItems: "center",
               }}
             >
-              <Text
-                style={{ color: colors.text, fontSize: 17, fontWeight: "700" }}
-              >
-                Do you want to create an account?
+              <Text style={{ color: "#FFFFFF", fontWeight: "700" }}>
+                Create an account
               </Text>
-              <Text
-                style={{
-                  color: colors.muted,
-                  fontSize: 14,
-                  lineHeight: 20,
-                  marginTop: 6,
-                }}
-              >
-                CramWise works without one. Sign up to back up your decks and
-                sync them across devices.
+            </Pressable>
+            <Pressable
+              onPress={showComingSoon}
+              style={{ marginTop: 12, alignItems: "center" }}
+            >
+              <Text style={{ color: colors.accent, fontWeight: "600" }}>
+                I already have an account
               </Text>
-              <Pressable
-                onPress={() => router.push("/welcome")}
-                style={{
-                  backgroundColor: colors.accent,
-                  borderRadius: 10,
-                  marginTop: 14,
-                  paddingVertical: 12,
-                  alignItems: "center",
-                }}
-              >
-                <Text style={{ color: "#FFFFFF", fontWeight: "700" }}>
-                  Create an account
-                </Text>
-              </Pressable>
-              <Pressable
-                onPress={() => router.push("/sign-in")}
-                style={{ marginTop: 12, alignItems: "center" }}
-              >
-                <Text style={{ color: colors.accent, fontWeight: "600" }}>
-                  I already have an account
-                </Text>
-              </Pressable>
-            </View>
-          )}
+            </Pressable>
+          </View>
 
           <Text
             style={{
