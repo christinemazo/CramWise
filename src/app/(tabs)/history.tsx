@@ -3,7 +3,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 
@@ -34,7 +33,17 @@ const recentQuizzes = [
   },
 ];
 
-const bestScores = [
+const topScores = [
+  {
+    title: "Computer Science",
+    score: 96,
+    icon: "desktop-outline" as const,
+  },
+  {
+    title: "Mathematics",
+    score: 95,
+    icon: "calculator-outline" as const,
+  },
   {
     title: "Biology",
     score: 92,
@@ -45,495 +54,426 @@ const bestScores = [
     score: 88,
     icon: "code-slash-outline" as const,
   },
-  {
-    title: "Mathematics",
-    score: 95,
-    icon: "calculator-outline" as const,
-  },
-  {
-    title: "Computer Science",
-    score: 96,
-    icon: "desktop-outline" as const,
-  },
 ];
 
 export default function ProgressScreen() {
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.content}
-      showsVerticalScrollIndicator={false}
-    >
-      {/* Header */}
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.title}>Progress</Text>
+    <View style={styles.container}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.content}
+      >
+        {/* Header */}
+        <Text style={styles.greeting}>
+          Track Your Progress
+        </Text>
 
-          <Text style={styles.subtitle}>
-            Track your quiz results
-          </Text>
-        </View>
+        <Text style={styles.title}>
+          Progress
+        </Text>
 
-        <View style={styles.headerIcon}>
-          <Ionicons
-            name="trending-up"
-            size={22}
-            color="#208AEF"
-          />
-        </View>
-      </View>
+        {/* Overall Progress */}
+        <View style={styles.progressCard}>
+          <View style={styles.progressHeader}>
+            <View>
+              <Text style={styles.progressTitle}>
+                Overall Progress
+              </Text>
 
-      {/* Overall Progress */}
-      <View style={styles.progressCard}>
-        <View style={styles.progressTop}>
-          <View>
-            <Text style={styles.progressLabel}>
-              Overall Progress
-            </Text>
+              <Text style={styles.progressSubtitle}>
+                Keep learning and improving!
+              </Text>
+            </View>
 
-            <Text style={styles.progressDescription}>
-              Keep improving your scores
+            <Text style={styles.progressScore}>
+              87%
             </Text>
           </View>
 
-          <Text style={styles.progressPercentage}>
-            85%
-          </Text>
+          <View style={styles.progressBar}>
+            <View style={styles.progressFill} />
+
+            <View style={styles.progressRemaining} />
+          </View>
         </View>
 
-        <View style={styles.progressBarBackground}>
-          <View
-            style={[
-              styles.progressBarFill,
-              { width: "85%" },
-            ]}
-          />
-        </View>
-
-        <View style={styles.progressBottom}>
-          <Text style={styles.progressSmallText}>
-            Overall Score
-          </Text>
-
-          <Text style={styles.progressSmallText}>
-            85 / 100
-          </Text>
-        </View>
-      </View>
-
-      {/* Recent Quizzes */}
-      <View style={styles.sectionHeader}>
-        <View>
+        {/* Recent Quizzes */}
+        <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>
             Recent Quizzes
           </Text>
 
-          <Text style={styles.sectionSubtitle}>
-            Your latest quiz results
+          <Text style={styles.viewAll}>
+            View all
           </Text>
         </View>
 
-        <TouchableOpacity activeOpacity={0.7}>
-          <Text style={styles.viewAll}>
-            See All
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.list}>
         {recentQuizzes.map((item, index) => (
-          <TouchableOpacity
+          <View
             key={index}
-            style={styles.activityCard}
-            activeOpacity={0.75}
+            style={styles.quizCard}
           >
-            {/* Subject Icon */}
+            {/* Icon */}
             <View style={styles.iconBox}>
               <Ionicons
                 name={item.icon}
-                size={21}
-                color="#208AEF"
+                size={22}
+                color="#3B82F6"
               />
             </View>
 
             {/* Quiz Information */}
-            <View style={styles.activityInfo}>
-              <Text style={styles.cardTitle}>
+            <View style={styles.quizInfo}>
+              <Text style={styles.quizTitle}>
                 {item.title}
               </Text>
 
-              <View style={styles.dateRow}>
-                <Ionicons
-                  name="time-outline"
-                  size={13}
-                  color="#78879B"
+              <Text style={styles.quizDate}>
+                Quiz • {item.date}
+              </Text>
+
+              {/* Quiz Progress */}
+              <View style={styles.smallProgress}>
+                <View
+                  style={[
+                    styles.smallProgressFill,
+                    {
+                      flex: item.score,
+                    },
+                  ]}
                 />
 
-                <Text style={styles.date}>
-                  {item.date}
-                </Text>
+                <View
+                  style={[
+                    styles.smallProgressRemaining,
+                    {
+                      flex: 100 - item.score,
+                    },
+                  ]}
+                />
               </View>
             </View>
 
             {/* Score */}
-            <View style={styles.scoreContainer}>
-              <Text style={styles.score}>
-                {item.score}%
-              </Text>
-
-              <Ionicons
-                name="chevron-forward"
-                size={17}
-                color="#5F6E82"
-              />
-            </View>
-          </TouchableOpacity>
+            <Text style={styles.quizScore}>
+              {item.score}%
+            </Text>
+          </View>
         ))}
-      </View>
 
-      {/* Best Scores */}
-      <View style={styles.highScoreHeader}>
-        <View style={styles.highScoreTitleRow}>
-          <View style={styles.trophyBox}>
-            <Ionicons
-              name="trophy"
-              size={18}
-              color="#208AEF"
-            />
-          </View>
+        {/* Top Scores */}
+        <Text style={styles.topScoresTitle}>
+          Top Scores
+        </Text>
 
-          <View>
-            <Text style={styles.sectionTitle}>
-              Best Scores
-            </Text>
-
-            <Text style={styles.sectionSubtitle}>
-              Your highest score for each subject
-            </Text>
-          </View>
-        </View>
-      </View>
-
-      <View style={styles.highScoreList}>
-        {bestScores.map((item, index) => (
-          <View
-            key={index}
-            style={styles.highScoreRow}
-          >
-            {/* Rank */}
-            <View style={styles.rankContainer}>
+        <View style={styles.topScoresCard}>
+          {topScores.map((item, index) => (
+            <View
+              key={index}
+              style={[
+                styles.topScoreRow,
+                index === topScores.length - 1 &&
+                  styles.lastTopScoreRow,
+              ]}
+            >
               <Text style={styles.rank}>
                 {index + 1}
               </Text>
-            </View>
 
-            {/* Subject Icon */}
-            <View style={styles.highScoreIcon}>
               <Ionicons
                 name={item.icon}
-                size={19}
-                color="#208AEF"
+                size={20}
+                color="#3B82F6"
               />
-            </View>
 
-            {/* Subject */}
-            <View style={styles.highScoreInfo}>
-              <Text style={styles.highScoreSubject}>
+              <Text style={styles.subject}>
                 {item.title}
               </Text>
 
-              <Text style={styles.bestLabel}>
-                Highest Score
-              </Text>
-            </View>
-
-            {/* Score */}
-            <View style={styles.scoreBadge}>
-              <Text style={styles.highScoreValue}>
+              <Text style={styles.topScore}>
                 {item.score}%
               </Text>
             </View>
+          ))}
+        </View>
+
+        {/* Motivation */}
+        <View style={styles.motivationCard}>
+          <View style={styles.motivationIcon}>
+            <Ionicons
+              name="sparkles-outline"
+              size={22}
+              color="#3B82F6"
+            />
           </View>
-        ))}
-      </View>
-    </ScrollView>
+
+          <View style={styles.motivationText}>
+            <Text style={styles.motivationTitle}>
+              Keep your momentum going!
+            </Text>
+
+            <Text style={styles.motivationSubtitle}>
+              Review your weaker subjects and improve
+              your next scores.
+            </Text>
+          </View>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  /* Main Screen */
   container: {
     flex: 1,
-    backgroundColor: "#0B1326",
+    backgroundColor: "#0F1629",
   },
 
   content: {
     paddingHorizontal: 20,
-    paddingTop: 52,
+    paddingTop: 48,
     paddingBottom: 110,
   },
 
   /* Header */
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 24,
+  greeting: {
+    fontSize: 14,
+    color: "#94A3B8",
+    marginBottom: 4,
   },
 
   title: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#FFFFFF",
-    letterSpacing: -0.5,
-  },
-
-  subtitle: {
-    fontSize: 13,
-    color: "#78879B",
-    marginTop: 5,
-  },
-
-  headerIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    backgroundColor: "#102D52",
-    alignItems: "center",
-    justifyContent: "center",
+    fontSize: 30,
+    fontWeight: "800",
+    color: "#F8FAFC",
+    marginBottom: 22,
   },
 
   /* Overall Progress */
   progressCard: {
-    backgroundColor: "#17263A",
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: "#25364D",
-    padding: 18,
-    marginBottom: 30,
+    backgroundColor: "#3B82F6",
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 28,
   },
 
-  progressTop: {
+  progressHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
 
-  progressLabel: {
-    fontSize: 16,
-    fontWeight: "700",
+  progressTitle: {
+    fontSize: 19,
+    fontWeight: "800",
     color: "#FFFFFF",
   },
 
-  progressDescription: {
+  progressSubtitle: {
     fontSize: 12,
-    color: "#78879B",
+    color: "#E0EAFF",
     marginTop: 5,
   },
 
-  progressPercentage: {
-    fontSize: 25,
-    fontWeight: "700",
-    color: "#208AEF",
-  },
-
-  progressBarBackground: {
-    height: 9,
-    backgroundColor: "#25364D",
-    borderRadius: 10,
-    overflow: "hidden",
-    marginTop: 18,
-  },
-
-  progressBarFill: {
-    height: "100%",
-    backgroundColor: "#208AEF",
-    borderRadius: 10,
-  },
-
-  progressBottom: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 9,
-  },
-
-  progressSmallText: {
-    fontSize: 11,
-    color: "#78879B",
-  },
-
-  /* Section Header */
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-    marginBottom: 13,
-  },
-
-  sectionTitle: {
-    fontSize: 17,
-    fontWeight: "700",
+  progressScore: {
+    fontSize: 30,
+    fontWeight: "800",
     color: "#FFFFFF",
   },
 
-  sectionSubtitle: {
-    fontSize: 11,
-    color: "#78879B",
-    marginTop: 4,
+  progressBar: {
+    height: 8,
+    flexDirection: "row",
+    backgroundColor: "#6B8EF5",
+    borderRadius: 10,
+    overflow: "hidden",
+    marginTop: 20,
   },
 
-  viewAll: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#208AEF",
-    paddingBottom: 2,
+  progressFill: {
+    flex: 87,
+    height: "100%",
+    backgroundColor: "#FFFFFF",
+  },
+
+  progressRemaining: {
+    flex: 13,
+    height: "100%",
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
 
   /* Recent Quizzes */
-  list: {
-    gap: 10,
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
   },
 
-  activityCard: {
-    minHeight: 70,
+  sectionTitle: {
+    fontSize: 19,
+    fontWeight: "800",
+    color: "#F8FAFC",
+  },
+
+  viewAll: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#3B82F6",
+  },
+
+  quizCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#17263A",
-    borderRadius: 15,
+    backgroundColor: "#1C293C",
+    borderRadius: 17,
+    padding: 14,
+    marginBottom: 10,
     borderWidth: 1,
-    borderColor: "#25364D",
-    paddingHorizontal: 13,
+    borderColor: "#334155",
   },
 
   iconBox: {
-    width: 42,
-    height: 42,
-    borderRadius: 12,
-    backgroundColor: "#102D52",
+    width: 45,
+    height: 45,
+    borderRadius: 13,
+    backgroundColor: "#162A47",
     alignItems: "center",
     justifyContent: "center",
+    marginRight: 12,
   },
 
-  activityInfo: {
+  quizInfo: {
     flex: 1,
-    marginLeft: 12,
   },
 
-  cardTitle: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#FFFFFF",
-    marginBottom: 5,
-  },
-
-  dateRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-
-  date: {
-    fontSize: 11,
-    color: "#78879B",
-  },
-
-  scoreContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-  },
-
-  score: {
-    fontSize: 14,
+  quizTitle: {
+    fontSize: 15,
     fontWeight: "700",
-    color: "#208AEF",
+    color: "#F8FAFC",
   },
 
-  /* Best Scores */
-  highScoreHeader: {
-    marginTop: 30,
-    marginBottom: 14,
+  quizDate: {
+    fontSize: 11,
+    color: "#94A3B8",
+    marginTop: 3,
+    marginBottom: 7,
   },
 
-  highScoreTitleRow: {
+  /* Quiz Progress */
+  smallProgress: {
+    height: 5,
     flexDirection: "row",
-    alignItems: "center",
-  },
-
-  trophyBox: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: "#102D52",
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 10,
-  },
-
-  highScoreList: {
-    backgroundColor: "#17263A",
-    borderWidth: 1,
-    borderColor: "#25364D",
-    borderRadius: 17,
+    backgroundColor: "#334155",
+    borderRadius: 10,
     overflow: "hidden",
   },
 
-  highScoreRow: {
-    minHeight: 70,
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 13,
-    borderBottomWidth: 1,
-    borderBottomColor: "#25364D",
+  smallProgressFill: {
+    height: "100%",
+    backgroundColor: "#3B82F6",
   },
 
-  rankContainer: {
-    width: 28,
+  smallProgressRemaining: {
+    height: "100%",
+    backgroundColor: "#334155",
+  },
+
+  quizScore: {
+    fontSize: 14,
+    fontWeight: "800",
+    color: "#3B82F6",
+    marginLeft: 10,
+  },
+
+  /* Top Scores */
+  topScoresTitle: {
+    fontSize: 19,
+    fontWeight: "800",
+    color: "#F8FAFC",
+    marginTop: 18,
+    marginBottom: 12,
+  },
+
+  topScoresCard: {
+    backgroundColor: "#1C293C",
+    borderRadius: 17,
+    borderWidth: 1,
+    borderColor: "#334155",
+    overflow: "hidden",
+  },
+
+  topScoreRow: {
+    height: 58,
+    flexDirection: "row",
     alignItems: "center",
+    paddingHorizontal: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#334155",
+  },
+
+  lastTopScoreRow: {
+    borderBottomWidth: 0,
   },
 
   rank: {
-    fontSize: 13,
+    width: 25,
+    fontSize: 12,
     fontWeight: "700",
-    color: "#78879B",
+    color: "#94A3B8",
   },
 
-  highScoreIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 11,
-    backgroundColor: "#102D52",
+  subject: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#F8FAFC",
+    marginLeft: 10,
+  },
+
+  topScore: {
+    fontSize: 14,
+    fontWeight: "800",
+    color: "#3B82F6",
+  },
+
+  /* Motivation */
+  motivationCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#1C293C",
+    borderRadius: 17,
+    padding: 15,
+    marginTop: 18,
+    borderWidth: 1,
+    borderColor: "#334155",
+  },
+
+  motivationIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 13,
+    backgroundColor: "#162A47",
     alignItems: "center",
     justifyContent: "center",
-    marginLeft: 5,
+    marginRight: 12,
   },
 
-  highScoreInfo: {
+  motivationText: {
     flex: 1,
-    marginLeft: 11,
   },
 
-  highScoreSubject: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#FFFFFF",
-  },
-
-  bestLabel: {
-    fontSize: 10,
-    color: "#78879B",
-    marginTop: 3,
-  },
-
-  scoreBadge: {
-    backgroundColor: "#102D52",
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-  },
-
-  highScoreValue: {
+  motivationTitle: {
     fontSize: 13,
-    fontWeight: "700",
-    color: "#208AEF",
+    fontWeight: "800",
+    color: "#F8FAFC",
+    marginBottom: 3,
+  },
+
+  motivationSubtitle: {
+    fontSize: 11,
+    lineHeight: 16,
+    color: "#94A3B8",
   },
 });
