@@ -4,8 +4,14 @@ import { ThemeProvider } from "../contexts/ThemeContext";
 export default function RootLayout() {
   return (
     <ThemeProvider>
-      <Stack screenOptions={{ headerShown: false }}>
+      <Stack
+        initialRouteName="(tabs)"
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="settings" />
       </Stack>
     </ThemeProvider>
   );

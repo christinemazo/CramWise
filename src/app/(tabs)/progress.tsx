@@ -7,24 +7,12 @@ import {
   View,
 } from "react-native";
 
-const recentQuizzes = [
-  {
-    title: "Biology",
-    date: "Today",
-    score: 92,
-    icon: "flask-outline" as const,
-  },
+const quizzes = [
   {
     title: "Programming",
     date: "Yesterday",
     score: 78,
     icon: "code-slash-outline" as const,
-  },
-  {
-    title: "Mathematics",
-    date: "Sept 18",
-    score: 85,
-    icon: "calculator-outline" as const,
   },
   {
     title: "Computer Science",
@@ -36,19 +24,9 @@ const recentQuizzes = [
 
 const bestScores = [
   {
-    title: "Biology",
-    score: 92,
-    icon: "flask-outline" as const,
-  },
-  {
     title: "Programming",
     score: 88,
     icon: "code-slash-outline" as const,
-  },
-  {
-    title: "Mathematics",
-    score: 95,
-    icon: "calculator-outline" as const,
   },
   {
     title: "Computer Science",
@@ -57,7 +35,9 @@ const bestScores = [
   },
 ];
 
-export default function ProgressScreen() {
+export default function Progress() {
+  const averageScore = 85;
+
   return (
     <ScrollView
       style={styles.container}
@@ -68,18 +48,11 @@ export default function ProgressScreen() {
       <View style={styles.header}>
         <View>
           <Text style={styles.title}>Progress</Text>
-
-          <Text style={styles.subtitle}>
-            Track your quiz results
-          </Text>
+          <Text style={styles.subtitle}>Track your quiz results</Text>
         </View>
 
         <View style={styles.headerIcon}>
-          <Ionicons
-            name="trending-up"
-            size={22}
-            color="#208AEF"
-          />
+          <Ionicons name="trending-up" size={22} color="#208AEF" />
         </View>
       </View>
 
@@ -87,105 +60,62 @@ export default function ProgressScreen() {
       <View style={styles.progressCard}>
         <View style={styles.progressTop}>
           <View>
-            <Text style={styles.progressLabel}>
-              Overall Progress
-            </Text>
-
+            <Text style={styles.progressLabel}>Overall Progress</Text>
             <Text style={styles.progressDescription}>
               Keep improving your scores
             </Text>
           </View>
 
-          <Text style={styles.progressPercentage}>
-            85%
-          </Text>
+          <Text style={styles.progressPercentage}>85%</Text>
         </View>
 
         <View style={styles.progressBarBackground}>
           <View
-            style={[
-              styles.progressBarFill,
-              { width: "85%" },
-            ]}
+            style={[styles.progressBarFill, { width: `${averageScore}%` }]}
           />
         </View>
 
         <View style={styles.progressBottom}>
-          <Text style={styles.progressSmallText}>
-            Overall Score
-          </Text>
-
-          <Text style={styles.progressSmallText}>
-            85 / 100
-          </Text>
+          <Text style={styles.progressSmallText}>Overall Score</Text>
+          <Text style={styles.progressSmallText}>85 / 100</Text>
         </View>
       </View>
 
       {/* Recent Quizzes */}
       <View style={styles.sectionHeader}>
         <View>
-          <Text style={styles.sectionTitle}>
-            Recent Quizzes
-          </Text>
-
-          <Text style={styles.sectionSubtitle}>
-            Your latest quiz results
-          </Text>
+          <Text style={styles.sectionTitle}>Recent Quizzes</Text>
+          <Text style={styles.sectionSubtitle}>Your latest quiz results</Text>
         </View>
 
         <TouchableOpacity activeOpacity={0.7}>
-          <Text style={styles.viewAll}>
-            See All
-          </Text>
+          <Text style={styles.viewAll}>See All</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.list}>
-        {recentQuizzes.map((item, index) => (
+        {quizzes.map((item) => (
           <TouchableOpacity
-            key={index}
+            key={item.title}
             style={styles.activityCard}
             activeOpacity={0.75}
           >
-            {/* Subject Icon */}
             <View style={styles.iconBox}>
-              <Ionicons
-                name={item.icon}
-                size={21}
-                color="#208AEF"
-              />
+              <Ionicons name={item.icon} size={21} color="#208AEF" />
             </View>
 
-            {/* Quiz Information */}
             <View style={styles.activityInfo}>
-              <Text style={styles.cardTitle}>
-                {item.title}
-              </Text>
+              <Text style={styles.cardTitle}>{item.title}</Text>
 
               <View style={styles.dateRow}>
-                <Ionicons
-                  name="time-outline"
-                  size={13}
-                  color="#78879B"
-                />
-
-                <Text style={styles.date}>
-                  {item.date}
-                </Text>
+                <Ionicons name="time-outline" size={13} color="#78879B" />
+                <Text style={styles.date}>{item.date}</Text>
               </View>
             </View>
 
-            {/* Score */}
             <View style={styles.scoreContainer}>
-              <Text style={styles.score}>
-                {item.score}%
-              </Text>
-
-              <Ionicons
-                name="chevron-forward"
-                size={17}
-                color="#5F6E82"
-              />
+              <Text style={styles.score}>{item.score}%</Text>
+              <Ionicons name="chevron-forward" size={17} color="#5F6E82" />
             </View>
           </TouchableOpacity>
         ))}
@@ -195,18 +125,11 @@ export default function ProgressScreen() {
       <View style={styles.highScoreHeader}>
         <View style={styles.highScoreTitleRow}>
           <View style={styles.trophyBox}>
-            <Ionicons
-              name="trophy"
-              size={18}
-              color="#208AEF"
-            />
+            <Ionicons name="trophy" size={18} color="#208AEF" />
           </View>
 
           <View>
-            <Text style={styles.sectionTitle}>
-              Best Scores
-            </Text>
-
+            <Text style={styles.sectionTitle}>Best Scores</Text>
             <Text style={styles.sectionSubtitle}>
               Your highest score for each subject
             </Text>
@@ -217,44 +140,44 @@ export default function ProgressScreen() {
       <View style={styles.highScoreList}>
         {bestScores.map((item, index) => (
           <View
-            key={index}
-            style={styles.highScoreRow}
+            key={item.title}
+            style={[
+              styles.highScoreRow,
+              index === bestScores.length - 1 && styles.lastRow,
+            ]}
           >
-            {/* Rank */}
             <View style={styles.rankContainer}>
-              <Text style={styles.rank}>
-                {index + 1}
-              </Text>
+              <Text style={styles.rank}>{index + 1}</Text>
             </View>
 
-            {/* Subject Icon */}
             <View style={styles.highScoreIcon}>
-              <Ionicons
-                name={item.icon}
-                size={19}
-                color="#208AEF"
-              />
+              <Ionicons name={item.icon} size={19} color="#208AEF" />
             </View>
 
-            {/* Subject */}
             <View style={styles.highScoreInfo}>
-              <Text style={styles.highScoreSubject}>
-                {item.title}
-              </Text>
-
-              <Text style={styles.bestLabel}>
-                Highest Score
-              </Text>
+              <Text style={styles.highScoreSubject}>{item.title}</Text>
+              <Text style={styles.bestLabel}>Highest Score</Text>
             </View>
 
-            {/* Score */}
             <View style={styles.scoreBadge}>
-              <Text style={styles.highScoreValue}>
-                {item.score}%
-              </Text>
+              <Text style={styles.highScoreValue}>{item.score}%</Text>
             </View>
           </View>
         ))}
+      </View>
+
+      {/* Score Message */}
+      <View style={styles.scoreMessage}>
+        <Text style={styles.emoji}>🏆</Text>
+
+        <Text style={styles.scoreTitle}>
+          Your quiz scores will show up here
+        </Text>
+
+        <Text style={styles.scoreBody}>
+          Once you complete quizzes, track your best scores and progress over
+          time.
+        </Text>
       </View>
     </ScrollView>
   );
@@ -272,7 +195,6 @@ const styles = StyleSheet.create({
     paddingBottom: 110,
   },
 
-  /* Header */
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -302,7 +224,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  /* Overall Progress */
   progressCard: {
     backgroundColor: "#17263A",
     borderRadius: 18,
@@ -361,7 +282,6 @@ const styles = StyleSheet.create({
     color: "#78879B",
   },
 
-  /* Section Header */
   sectionHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -388,7 +308,6 @@ const styles = StyleSheet.create({
     paddingBottom: 2,
   },
 
-  /* Recent Quizzes */
   list: {
     gap: 10,
   },
@@ -448,7 +367,6 @@ const styles = StyleSheet.create({
     color: "#208AEF",
   },
 
-  /* Best Scores */
   highScoreHeader: {
     marginTop: 30,
     marginBottom: 14,
@@ -484,6 +402,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 13,
     borderBottomWidth: 1,
     borderBottomColor: "#25364D",
+  },
+
+  lastRow: {
+    borderBottomWidth: 0,
   },
 
   rankContainer: {
@@ -535,5 +457,35 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "700",
     color: "#208AEF",
+  },
+
+  scoreMessage: {
+    backgroundColor: "#17263A",
+    borderRadius: 17,
+    borderWidth: 1,
+    borderColor: "#25364D",
+    padding: 24,
+    marginTop: 20,
+    alignItems: "center",
+  },
+
+  emoji: {
+    fontSize: 40,
+    marginBottom: 16,
+  },
+
+  scoreTitle: {
+    color: "#FFFFFF",
+    fontSize: 20,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+
+  scoreBody: {
+    color: "#9CA3AF",
+    fontSize: 14,
+    textAlign: "center",
+    lineHeight: 20,
   },
 });

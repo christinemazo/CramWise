@@ -8,7 +8,13 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarActiveTintColor: "#208AEF",
         tabBarInactiveTintColor: "#9CA3AF",
-        tabBarStyle: { backgroundColor: "#0F172A", borderTopColor: "#1E293B" },
+        tabBarStyle: {
+          backgroundColor: "#0F172A",
+          borderTopColor: "#1E293B",
+          height: 70,
+          paddingBottom: 8,
+          paddingTop: 8,
+        },
       }}
     >
       <Tabs.Screen
@@ -20,39 +26,23 @@ export default function TabsLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="scores"
-        options={{
-          title: "Scores",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="stats-chart" size={size} color={color} />
-          ),
-        }}
-      />
+
       <Tabs.Screen
         name="create"
         options={{
-          title: "",
+          title: "Create",
           tabBarIcon: () => (
-            <Ionicons name="add-circle" size={40} color="#208AEF" />
+            <Ionicons name="add-circle" size={46} color="#208AEF" />
           ),
         }}
       />
+
       <Tabs.Screen
-        name="history"
+        name="progress"
         options={{
-          title: "History",
+          title: "Progress",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="time" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: "Settings",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings" size={size} color={color} />
+            <Ionicons name="stats-chart" size={size} color={color} />
           ),
         }}
       />
