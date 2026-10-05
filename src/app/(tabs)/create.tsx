@@ -52,7 +52,7 @@ export default function Create() {
       <TextInput
         style={styles.input}
         placeholder="e.g., Biology 101"
-        placeholderTextColor="#888"
+        placeholderTextColor="#78879B"
         value={deckTitle}
         onChangeText={setDeckTitle}
       />
@@ -66,7 +66,7 @@ export default function Create() {
         <TextInput
           style={[styles.input, styles.textArea]}
           placeholder="Enter question..."
-          placeholderTextColor="#888"
+          placeholderTextColor="#78879B"
           multiline
           value={question}
           onChangeText={setQuestion}
@@ -77,7 +77,7 @@ export default function Create() {
         <TextInput
           style={[styles.input, styles.textArea]}
           placeholder="Enter answer..."
-          placeholderTextColor="#888"
+          placeholderTextColor="#78879B"
           multiline
           value={answer}
           onChangeText={setAnswer}
@@ -115,42 +115,43 @@ export default function Create() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0F172A",
+    backgroundColor: "#0F1629",
   },
 
   content: {
-    padding: 20,
-    paddingBottom: 40,
+    paddingHorizontal: 20,
+    paddingTop: 48,
+    paddingBottom: 110,
   },
 
   header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#FFFFFF",
+    fontSize: 30,
+    fontWeight: "800",
+    color: "#F8FAFC",
     marginBottom: 20,
   },
 
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: "700",
     color: "#FFFFFF",
     marginVertical: 10,
   },
 
   label: {
-    fontSize: 14,
-    color: "#AAAAAA",
+    fontSize: 13,
+    color: "#94A3B8",
     marginBottom: 6,
   },
 
   input: {
-    backgroundColor: "#1B263B",
-    color: "#FFFFFF",
-    borderRadius: 8,
+    backgroundColor: "#0F1629",
+    color: "#F8FAFC",
+    borderRadius: 12,
     padding: 12,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: "#334155",
+    borderColor: "#25364D",
   },
 
   textArea: {
@@ -159,41 +160,46 @@ const styles = StyleSheet.create({
   },
 
   cardForm: {
-    backgroundColor: "#162032",
-    padding: 16,
-    borderRadius: 10,
-    marginBottom: 20,
+    backgroundColor: "#17263A",
+    padding: 18,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#25364D",
+    marginBottom: 24,
   },
 
   addButton: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "#208AEF",
     padding: 12,
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: "center",
     marginTop: 8,
   },
 
   buttonText: {
     color: "#FFFFFF",
-    fontWeight: "bold",
+    fontWeight: "700",
   },
 
   cardPreview: {
-    backgroundColor: "#1B263B",
-    padding: 12,
-    borderRadius: 8,
+    backgroundColor: "#17263A",
+    padding: 14,
+    borderRadius: 16,
     marginBottom: 10,
     borderLeftWidth: 4,
-    borderLeftColor: "#007AFF",
+    borderLeftColor: "#208AEF",
+    borderWidth: 1,
+    borderColor: "#25364D",
   },
 
   cardText: {
-    color: "#FFFFFF",
+    color: "#F8FAFC",
     fontSize: 14,
     marginBottom: 4,
   },
 
   bold: {
-    fontWeight: "bold",
+    fontWeight: "700",
+    color: "#208AEF",
   },
 });

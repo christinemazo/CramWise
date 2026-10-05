@@ -2,6 +2,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
+// Placeholder numbers, same as the Progress screen.
+// Replace with real data once quiz results are stored.
+const averageScore = 85;
+const quizzesTaken = 2;
+const bestScore = 96;
+
 export default function Home() {
   const router = useRouter();
 
@@ -15,7 +21,7 @@ export default function Home() {
         accessibilityLabel="Open Settings"
         hitSlop={10}
       >
-        <Ionicons name="settings-outline" size={25} color="#FFFFFF" />
+        <Ionicons name="settings-outline" size={22} color="#208AEF" />
       </Pressable>
 
       <ScrollView
@@ -42,61 +48,64 @@ export default function Home() {
           </Text>
         </View>
 
-        {/* QUICK ACTIONS */}
-        <Text style={styles.sectionLabel}>Quick actions</Text>
+        {/* PROGRESS OVERVIEW */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionLabelNoMargin}>Progress overview</Text>
+
+          <Pressable
+            onPress={() => router.push("/progress")}
+            accessibilityRole="button"
+            accessibilityLabel="See all progress"
+            hitSlop={10}
+          >
+            <Text style={styles.seeAll}>See All</Text>
+          </Pressable>
+        </View>
 
         <Pressable
-          style={styles.actionCard}
-          onPress={() => router.push("/create")}
-        >
-          <View style={styles.actionIcon}>
-            <Ionicons name="add-circle-outline" size={26} color="#3B82F6" />
-          </View>
-
-          <View style={styles.actionContent}>
-            <Text style={styles.actionTitle}>Create Flashcards</Text>
-
-            <Text style={styles.actionText}>Create a new study deck.</Text>
-          </View>
-
-          <Ionicons name="chevron-forward" size={22} color="#64748B" />
-        </Pressable>
-
-        <Pressable
-          style={styles.actionCard}
+          style={styles.progressCard}
           onPress={() => router.push("/progress")}
         >
-          <View style={styles.actionIcon}>
-            <Ionicons name="stats-chart-outline" size={26} color="#3B82F6" />
+          <View style={styles.progressTop}>
+            <View>
+              <Text style={styles.progressLabel}>Overall Progress</Text>
+              <Text style={styles.progressDescription}>
+                Keep improving your scores
+              </Text>
+            </View>
+
+            <Text style={styles.progressPercentage}>{averageScore}%</Text>
           </View>
 
-          <View style={styles.actionContent}>
-            <Text style={styles.actionTitle}>View Progress</Text>
-
-            <Text style={styles.actionText}>Check your study progress.</Text>
+          <View style={styles.progressBarBackground}>
+            <View
+              style={[styles.progressBarFill, { width: `${averageScore}%` }]}
+            />
           </View>
 
-          <Ionicons name="chevron-forward" size={22} color="#64748B" />
-        </Pressable>
+          <View style={styles.statsRow}>
+            <View style={styles.statTile}>
+              <Ionicons
+                name="document-text-outline"
+                size={18}
+                color="#208AEF"
+              />
+              <Text style={styles.statValue}>{quizzesTaken}</Text>
+              <Text style={styles.statLabel}>Quizzes</Text>
+            </View>
 
-        {/* SETTINGS */}
-        <Pressable
-          style={styles.actionCard}
-          onPress={() => router.push("/settings")}
-        >
-          <View style={styles.actionIcon}>
-            <Ionicons name="settings-outline" size={26} color="#3B82F6" />
+            <View style={styles.statTile}>
+              <Ionicons name="trending-up-outline" size={18} color="#208AEF" />
+              <Text style={styles.statValue}>{averageScore}%</Text>
+              <Text style={styles.statLabel}>Average</Text>
+            </View>
+
+            <View style={styles.statTile}>
+              <Ionicons name="trophy-outline" size={18} color="#208AEF" />
+              <Text style={styles.statValue}>{bestScore}%</Text>
+              <Text style={styles.statLabel}>Best</Text>
+            </View>
           </View>
-
-          <View style={styles.actionContent}>
-            <Text style={styles.actionTitle}>Settings</Text>
-
-            <Text style={styles.actionText}>
-              Account, appearance, and app settings.
-            </Text>
-          </View>
-
-          <Ionicons name="chevron-forward" size={22} color="#64748B" />
         </Pressable>
       </ScrollView>
     </View>
@@ -106,56 +115,75 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0F172A",
+    backgroundColor: "#0F1629",
   },
 
   content: {
-    padding: 20,
-    paddingTop: 100,
-    paddingBottom: 40,
+    paddingHorizontal: 20,
+    paddingTop: 48,
+    paddingBottom: 110,
   },
 
   settingsButton: {
     position: "absolute",
-    top: 50,
+    top: 48,
     right: 20,
     zIndex: 100,
     elevation: 10,
-    width: 46,
-    height: 46,
-    borderRadius: 23,
-    backgroundColor: "#1E293B",
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    backgroundColor: "#17263A",
     borderWidth: 1,
-    borderColor: "#334155",
+    borderColor: "#25364D",
     alignItems: "center",
     justifyContent: "center",
   },
 
   greeting: {
-    color: "#FFFFFF",
-    fontSize: 28,
+    color: "#F8FAFC",
+    fontSize: 30,
     fontWeight: "800",
   },
 
   subtitle: {
-    color: "#9CA3AF",
+    color: "#94A3B8",
     fontSize: 14,
-    marginTop: 5,
-    marginBottom: 32,
+    marginTop: 2,
+    marginBottom: 28,
   },
 
   sectionLabel: {
-    color: "#9CA3AF",
-    fontSize: 14,
-    fontWeight: "600",
+    color: "#FFFFFF",
+    fontSize: 18,
+    fontWeight: "700",
     marginBottom: 12,
   },
 
+  sectionLabelNoMargin: {
+    color: "#FFFFFF",
+    fontSize: 18,
+    fontWeight: "700",
+  },
+
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+
+  seeAll: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#208AEF",
+  },
+
   card: {
-    backgroundColor: "#1E293B",
-    borderRadius: 16,
+    backgroundColor: "#17263A",
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#334155",
+    borderColor: "#25364D",
     padding: 20,
     marginBottom: 28,
   },
@@ -166,52 +194,87 @@ const styles = StyleSheet.create({
   },
 
   cardTitle: {
-    color: "#FFFFFF",
+    color: "#F8FAFC",
     fontSize: 18,
     fontWeight: "700",
     marginBottom: 6,
   },
 
   cardBody: {
-    color: "#9CA3AF",
+    color: "#94A3B8",
     fontSize: 14,
     lineHeight: 20,
   },
 
-  actionCard: {
-    backgroundColor: "#1E293B",
-    borderRadius: 16,
+  progressCard: {
+    backgroundColor: "#17263A",
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#334155",
-    padding: 16,
-    marginBottom: 12,
+    borderColor: "#25364D",
+    padding: 20,
+  },
+
+  progressTop: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
   },
 
-  actionIcon: {
-    width: 46,
-    height: 46,
-    borderRadius: 13,
-    backgroundColor: "#172554",
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 14,
-  },
-
-  actionContent: {
-    flex: 1,
-  },
-
-  actionTitle: {
+  progressLabel: {
+    fontSize: 16,
+    fontWeight: "700",
     color: "#FFFFFF",
+  },
+
+  progressDescription: {
+    fontSize: 12,
+    color: "#94A3B8",
+    marginTop: 3,
+  },
+
+  progressPercentage: {
+    fontSize: 25,
+    fontWeight: "700",
+    color: "#208AEF",
+  },
+
+  progressBarBackground: {
+    height: 9,
+    backgroundColor: "#25364D",
+    borderRadius: 10,
+    overflow: "hidden",
+    marginTop: 16,
+  },
+
+  progressBarFill: {
+    height: "100%",
+    backgroundColor: "#208AEF",
+    borderRadius: 10,
+  },
+
+  statsRow: {
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 18,
+  },
+
+  statTile: {
+    flex: 1,
+    backgroundColor: "#0F1629",
+    borderRadius: 14,
+    paddingVertical: 12,
+    alignItems: "center",
+    gap: 4,
+  },
+
+  statValue: {
+    color: "#F8FAFC",
     fontSize: 16,
     fontWeight: "700",
   },
 
-  actionText: {
-    color: "#94A3B8",
-    fontSize: 13,
-    marginTop: 4,
+  statLabel: {
+    color: "#78879B",
+    fontSize: 11,
   },
 });

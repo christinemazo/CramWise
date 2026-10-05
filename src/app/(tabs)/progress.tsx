@@ -1,5 +1,5 @@
-import React from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import {
   ScrollView,
   StyleSheet,
@@ -42,134 +42,148 @@ const bestScores = [
 ];
 
 export default function Progress() {
+  const router = useRouter();
   const averageScore = 85;
 
   return (
-    
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Header */}
-      
-        
-          Progress
-          Track your quiz results
-        
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.title}>Progress</Text>
+          <Text style={styles.subtitle}>Track your quiz results</Text>
+        </View>
 
-        
-          
-        
-      
+        <TouchableOpacity
+          style={styles.headerIcon}
+          onPress={() => router.push("/settings")}
+          accessibilityRole="button"
+          accessibilityLabel="Open settings"
+        >
+          <Ionicons name="settings-outline" size={22} color="#208AEF" />
+        </TouchableOpacity>
+      </View>
 
       {/* Overall Progress */}
-      
-        
-          
-            Overall Progress
-            
+      <View style={styles.progressCard}>
+        <View style={styles.progressTop}>
+          <View>
+            <Text style={styles.progressLabel}>Overall Progress</Text>
+            <Text style={styles.progressDescription}>
               Keep improving your scores
-            
-          
+            </Text>
+          </View>
 
-          85%
-        
+          <Text style={styles.progressPercentage}>{averageScore}%</Text>
+        </View>
 
-        
-          
-        
+        <View style={styles.progressBarBackground}>
+          <View
+            style={[styles.progressBarFill, { width: `${averageScore}%` }]}
+          />
+        </View>
 
-        
-          Overall Score
-          85 / 100
-        
-      
+        <View style={styles.progressBottom}>
+          <Text style={styles.progressSmallText}>Overall Score</Text>
+          <Text style={styles.progressSmallText}>{averageScore} / 100</Text>
+        </View>
+      </View>
 
       {/* Recent Quizzes */}
-      
-        
-          Recent Quizzes
-          Your latest quiz results
-        
+      <View style={styles.sectionHeader}>
+        <View>
+          <Text style={styles.sectionTitle}>Recent Quizzes</Text>
+          <Text style={styles.sectionSubtitle}>Your latest quiz results</Text>
+        </View>
 
-        
-          See All
-        
-      
+        <TouchableOpacity>
+          <Text style={styles.viewAll}>See All</Text>
+        </TouchableOpacity>
+      </View>
 
-      
+      <View style={styles.list}>
         {quizzes.map((item) => (
-          
-            
-              
-            
+          <View key={item.title} style={styles.activityCard}>
+            <View style={styles.iconBox}>
+              <Ionicons name={item.icon} size={20} color="#208AEF" />
+            </View>
 
-            
-              {item.title}
+            <View style={styles.activityInfo}>
+              <Text style={styles.cardTitle}>{item.title}</Text>
 
-              
-                
-                {item.date}
-              
-            
+              <View style={styles.dateRow}>
+                <Ionicons name="time-outline" size={12} color="#78879B" />
+                <Text style={styles.date}>{item.date}</Text>
+              </View>
+            </View>
 
-            
-              {item.score}%
-              
-            
-          
+            <View style={styles.scoreContainer}>
+              <Text style={styles.score}>{item.score}%</Text>
+              <Ionicons name="chevron-forward" size={16} color="#78879B" />
+            </View>
+          </View>
         ))}
-      
+      </View>
 
       {/* Best Scores */}
-      
-        
-          
-            
-          
+      <View style={styles.highScoreHeader}>
+        <View style={styles.highScoreTitleRow}>
+          <View style={styles.trophyBox}>
+            <Ionicons name="trophy-outline" size={20} color="#208AEF" />
+          </View>
 
-          
-            Best Scores
-            
+          <View>
+            <Text style={styles.sectionTitle}>Best Scores</Text>
+            <Text style={styles.sectionSubtitle}>
               Your highest score for each subject
-            
-          
-        
-      
+            </Text>
+          </View>
+        </View>
+      </View>
 
-      
+      <View style={styles.highScoreList}>
         {bestScores.map((item, index) => (
-          
-            
-              {index + 1}
-            
+          <View
+            key={item.title}
+            style={[
+              styles.highScoreRow,
+              index === bestScores.length - 1 && styles.lastRow,
+            ]}
+          >
+            <View style={styles.rankContainer}>
+              <Text style={styles.rank}>{index + 1}</Text>
+            </View>
 
-            
-              
-            
+            <View style={styles.highScoreIcon}>
+              <Ionicons name={item.icon} size={18} color="#208AEF" />
+            </View>
 
-            
-              {item.title}
-              Highest Score
-            
+            <View style={styles.highScoreInfo}>
+              <Text style={styles.highScoreSubject}>{item.title}</Text>
+              <Text style={styles.bestLabel}>Highest Score</Text>
+            </View>
 
-            
-              {item.score}%
-            
-          
+            <View style={styles.scoreBadge}>
+              <Text style={styles.highScoreValue}>{item.score}%</Text>
+            </View>
+          </View>
         ))}
-      
+      </View>
 
       {/* Motivation / Score Message */}
-      
-        🏆
+      <View style={styles.scoreMessage}>
+        <Text style={styles.emoji}>🏆</Text>
 
-        
+        <Text style={styles.scoreTitle}>
           Your quiz scores will show up here
-        
+        </Text>
 
-        
+        <Text style={styles.scoreBody}>
           Once you complete quizzes, track your best scores and progress over
           time.
-        
-      
-    
+        </Text>
+      </View>
+    </ScrollView>
   );
 }
 
