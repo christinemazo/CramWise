@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   Modal,
@@ -10,10 +10,8 @@ import {
   Text,
   View,
 } from "react-native";
-import { ThemeMode, useTheme } from "../contexts/ThemeContext";
 
-// Dark palette matches the Home / Create / Progress screens.
-const darkColors = {
+const colors = {
   background: "#0F1629",
   card: "#17263A",
   border: "#25364D",
@@ -24,36 +22,11 @@ const darkColors = {
   accent: "#208AEF",
 };
 
-const lightColors = {
-  background: "#F8FAFC",
-  card: "#FFFFFF",
-  border: "#E2E8F0",
-  iconBox: "#EEF2F7",
-  text: "#0F172A",
-  muted: "#64748B",
-  subtle: "#94A3B8",
-  accent: "#208AEF",
-};
-
-type Colors = typeof darkColors;
-
-const themeOptions: {
-  label: string;
-  value: ThemeMode;
-  icon: keyof typeof Ionicons.glyphMap;
-}[] = [
-  { label: "Light Mode", value: "light", icon: "sunny-outline" },
-  { label: "Dark Mode", value: "dark", icon: "moon-outline" },
-];
-
 export default function SettingsScreen() {
   const router = useRouter();
-  const { theme, actualTheme, setTheme } = useTheme();
   const [showAbout, setShowAbout] = useState(false);
 
-  const colors = actualTheme === "dark" ? darkColors : lightColors;
-  const styles = useMemo(() => makeStyles(colors), [colors]);
-
+  // The sign-in / sign-up pages no longer exist, so these buttons only show a message.
   function showComingSoon() {
     Alert.alert("Coming soon", "Accounts aren't available yet.");
   }
@@ -109,46 +82,6 @@ export default function SettingsScreen() {
           <Pressable onPress={showComingSoon} style={styles.linkButton}>
             <Text style={styles.linkText}>I already have an account</Text>
           </Pressable>
-        </View>
-
-        {/* APPEARANCE */}
-        <Text style={styles.sectionLabel}>Appearance</Text>
-
-        <View style={styles.listCard}>
-          {themeOptions.map((option, index) => {
-            const isSelected = theme === option.value;
-
-            return (
-              <Pressable
-                key={option.value}
-                onPress={() => setTheme(option.value)}
-                style={[
-                  styles.row,
-                  index === themeOptions.length - 1 && styles.lastRow,
-                ]}
-                accessibilityRole="radio"
-                accessibilityState={{ selected: isSelected }}
-              >
-                <View style={styles.rowIcon}>
-                  <Ionicons
-                    name={option.icon}
-                    size={18}
-                    color={colors.accent}
-                  />
-                </View>
-
-                <Text style={styles.rowLabel}>{option.label}</Text>
-
-                <View
-                  style={[styles.radio, isSelected && styles.radioSelected]}
-                >
-                  {isSelected && (
-                    <Ionicons name="checkmark" size={14} color="#FFFFFF" />
-                  )}
-                </View>
-              </Pressable>
-            );
-          })}
         </View>
 
         {/* ABOUT */}
@@ -209,182 +142,167 @@ export default function SettingsScreen() {
   );
 }
 
-function makeStyles(c: Colors) {
-  return StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: c.background,
-    },
-    content: {
-      paddingHorizontal: 20,
-      paddingTop: 48,
-      paddingBottom: 40,
-    },
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  content: {
+    paddingHorizontal: 20,
+    paddingTop: 48,
+    paddingBottom: 40,
+  },
 
-    // Header
-    header: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 14,
-      marginBottom: 28,
-    },
-    backButton: {
-      width: 44,
-      height: 44,
-      borderRadius: 14,
-      backgroundColor: c.card,
-      borderWidth: 1,
-      borderColor: c.border,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    title: {
-      fontSize: 30,
-      fontWeight: "800",
-      color: c.text,
-    },
-    subtitle: {
-      fontSize: 14,
-      color: c.muted,
-      marginTop: 2,
-    },
+  // Header
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    marginBottom: 28,
+  },
+  backButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: "800",
+    color: colors.text,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: colors.muted,
+    marginTop: 2,
+  },
 
-    sectionLabel: {
-      fontSize: 18,
-      fontWeight: "700",
-      color: c.text,
-      marginBottom: 12,
-    },
+  sectionLabel: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: colors.text,
+    marginBottom: 12,
+  },
 
-    // Account card
-    card: {
-      backgroundColor: c.card,
-      borderRadius: 20,
-      borderWidth: 1,
-      borderColor: c.border,
-      padding: 20,
-      marginBottom: 28,
-    },
-    cardTitle: {
-      fontSize: 17,
-      fontWeight: "700",
-      color: c.text,
-    },
-    cardBody: {
-      fontSize: 14,
-      lineHeight: 20,
-      color: c.muted,
-      marginTop: 6,
-    },
-    primaryButton: {
-      backgroundColor: c.accent,
-      borderRadius: 12,
-      paddingVertical: 12,
-      alignItems: "center",
-      marginTop: 16,
-    },
-    primaryButtonText: {
-      color: "#FFFFFF",
-      fontWeight: "700",
-    },
-    linkButton: {
-      alignItems: "center",
-      marginTop: 14,
-    },
-    linkText: {
-      color: c.accent,
-      fontWeight: "600",
-    },
-    pressed: {
-      opacity: 0.8,
-    },
+  // Account card
+  card: {
+    backgroundColor: colors.card,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: 20,
+    marginBottom: 28,
+  },
+  cardTitle: {
+    fontSize: 17,
+    fontWeight: "700",
+    color: colors.text,
+  },
+  cardBody: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: colors.muted,
+    marginTop: 6,
+  },
+  primaryButton: {
+    backgroundColor: colors.accent,
+    borderRadius: 12,
+    paddingVertical: 12,
+    alignItems: "center",
+    marginTop: 16,
+  },
+  primaryButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "700",
+  },
+  linkButton: {
+    alignItems: "center",
+    marginTop: 14,
+  },
+  linkText: {
+    color: colors.accent,
+    fontWeight: "600",
+  },
+  pressed: {
+    opacity: 0.8,
+  },
 
-    // List rows (appearance + about)
-    listCard: {
-      backgroundColor: c.card,
-      borderRadius: 18,
-      borderWidth: 1,
-      borderColor: c.border,
-      overflow: "hidden",
-      marginBottom: 28,
-    },
-    row: {
-      flexDirection: "row",
-      alignItems: "center",
-      paddingVertical: 12,
-      paddingHorizontal: 16,
-      borderBottomWidth: 1,
-      borderBottomColor: c.border,
-    },
-    lastRow: {
-      borderBottomWidth: 0,
-    },
-    rowIcon: {
-      width: 36,
-      height: 36,
-      borderRadius: 10,
-      backgroundColor: c.iconBox,
-      alignItems: "center",
-      justifyContent: "center",
-      marginRight: 12,
-    },
-    rowLabel: {
-      flex: 1,
-      fontSize: 15,
-      fontWeight: "700",
-      color: c.text,
-    },
-    radio: {
-      width: 22,
-      height: 22,
-      borderRadius: 11,
-      borderWidth: 2,
-      borderColor: c.subtle,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    radioSelected: {
-      backgroundColor: c.accent,
-      borderColor: c.accent,
-    },
+  // List rows (appearance + about)
+  listCard: {
+    backgroundColor: colors.card,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: colors.border,
+    overflow: "hidden",
+    marginBottom: 28,
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  lastRow: {
+    borderBottomWidth: 0,
+  },
+  rowIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: colors.iconBox,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  rowLabel: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: "700",
+    color: colors.text,
+  },
 
-    // Modal
-    modalBackdrop: {
-      flex: 1,
-      justifyContent: "center",
-      padding: 20,
-      backgroundColor: "rgba(0, 0, 0, 0.55)",
-    },
-    modalCard: {
-      backgroundColor: c.card,
-      borderRadius: 20,
-      borderWidth: 1,
-      borderColor: c.border,
-      padding: 24,
-    },
-    modalTitle: {
-      fontSize: 18,
-      fontWeight: "700",
-      color: c.text,
-      marginBottom: 12,
-    },
-    modalBody: {
-      fontSize: 14,
-      lineHeight: 22,
-      color: c.muted,
-    },
-    modalVersion: {
-      fontSize: 12,
-      color: c.subtle,
-      marginTop: 14,
-    },
-    modalButton: {
-      alignSelf: "flex-end",
-      backgroundColor: c.accent,
-      borderRadius: 12,
-      paddingHorizontal: 20,
-      paddingVertical: 10,
-      marginTop: 20,
-    },
-  });
-}
+  // Modal
+  modalBackdrop: {
+    flex: 1,
+    justifyContent: "center",
+    padding: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.55)",
+  },
+  modalCard: {
+    backgroundColor: colors.card,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: 24,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: colors.text,
+    marginBottom: 12,
+  },
+  modalBody: {
+    fontSize: 14,
+    lineHeight: 22,
+    color: colors.muted,
+  },
+  modalVersion: {
+    fontSize: 12,
+    color: colors.subtle,
+    marginTop: 14,
+  },
+  modalButton: {
+    alignSelf: "flex-end",
+    backgroundColor: colors.accent,
+    borderRadius: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginTop: 20,
+  },
+});
