@@ -1,6 +1,6 @@
 {
   "name": "cramwise",
-  "main": "expo-router/entry",
+  "main": "index.js",
   "version": "1.0.0",
   "dependencies": {
     "@expo/ngrok": "^4.1.3",
