@@ -3,19 +3,18 @@ import { useState } from "react"; // lets screens remember values
 import {
   ScrollView, // scrollable screen
   Text, // all text
-  TextInput, // typing fields
   TouchableOpacity, // pressable buttons
   View, // box / container
 } from "react-native";
 import { colors, styles } from "./styles"; // colors and styles from styles.js
 
-// DATA
+// DATA: sample values shown in the app
 
 // Placeholder scores. Replace with real data once quiz results are stored.
 const SCORES = [
   { id: "1", title: "Mobile Programming", date: "Yesterday", score: 100 },
-  { id: "2", title: "Programming Langauge", date: "Sept 17", score: 99 },
-  { id: "3", title: "Software Engineering", date: "Sept 12", score: 99 },
+  { id: "2", title: "Programming Language", date: "Two days ago", score: 99 },
+  { id: "3", title: "Software Engineering", date: "Sept 30", score: 99 },
 ];
 
 // Only this many scores are shown on the Progress screen.
@@ -26,6 +25,15 @@ const TABS = [
   { key: "home", label: "Home", icon: "home" },
   { key: "create", label: "Create", icon: "add-circle" },
   { key: "progress", label: "Progress", icon: "stats-chart" },
+];
+
+// Sample flashcards shown at the bottom of the Create screen.
+const FLASHCARDS = [
+  {
+    id: "1",
+    question: "What is React Native used for?",
+    answer: "Building mobile apps with JavaScript",
+  },
 ];
 
 // HELPER FUNCTION
@@ -80,105 +88,76 @@ function Home({ goTo }) {
   );
 }
 
-// CREATE SCREEN
+// FLASH CARD
 
-function Create() {
-  // What the user is typing right now
-  const [deckTitle, setDeckTitle] = useState("");
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
-
-  // The flashcards already added to the deck
-  const [cards, setCards] = useState([]);
-
-  // Runs when "+ Add Flashcard" is pressed
-  function addCard() {
-    // Do nothing if the question or answer is empty
-    if (!question.trim() || !answer.trim()) return;
-
-    const newCard = {
-      id: Date.now().toString(), // unique id
-      question: question.trim(),
-      answer: answer.trim(),
-    };
-
-    // Add the new card to the end of the list
-    setCards((current) => [...current, newCard]);
-
-    // Clear the fields so the next card can be typed
-    setQuestion("");
-    setAnswer("");
-  }
+// One flashcard. Tap it to flip between the question and the answer.
+function FlashCard({ question, answer }) {
+  // false = showing the question, true = showing the answer
+  const [flashed, setFlashed] = useState(false);
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.content}
-      keyboardShouldPersistTaps="handled"
+    <TouchableOpacity
+      style={[styles.flashCard, flashed && styles.flashCardBack]}
+      activeOpacity={0.9}
+      onPress={() => setFlashed(!flashed)}
     >
+      {/* Small label: which side is showing */}
+      <Text style={styles.flashSide}>{flashed ? "ANSWER" : "QUESTION"}</Text>
+      {/* The question or the answer */}
+      <Text style={styles.flashText}>{flashed ? answer : question}</Text>
+      {/* Hint for the user */}
+      <Text style={styles.flashHint}>Tap to see the answer</Text>
+    </TouchableOpacity>
+  );
+}
+
+// CREATE SCREEN (the form is static: nothing to type or save)
+
+function Create() {
+  return (
+    <ScrollView contentContainerStyle={styles.content}>
       {/* Header */}
       <Text style={styles.title}>Create New Deck</Text>
       <Text style={styles.subtitle}>Add cards to your deck</Text>
 
-      {/* Deck title field */}
+      {/* Deck title field (display only) */}
       <Text style={styles.label}>Deck Title</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="e.g., Biology 101"
-        placeholderTextColor={colors.subtle}
-        value={deckTitle}
-        onChangeText={setDeckTitle}
-      />
+      <View style={styles.input}>
+        <Text style={styles.fieldText}>e.g., Mobile Programming</Text>
+      </View>
 
-      {/* Add flashcard form */}
+      {/* Add flashcard form (display only) */}
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Add Flashcard</Text>
 
         {/* Front of the card */}
         <Text style={styles.label}>Front (Question / Term)</Text>
-        <TextInput
-          style={[styles.input, styles.textArea]}
-          placeholder="Enter question..."
-          placeholderTextColor={colors.subtle}
-          multiline
-          value={question}
-          onChangeText={setQuestion}
-        />
+        <View style={[styles.input, styles.textArea]}>
+          <Text style={styles.fieldText}>Enter question...</Text>
+        </View>
 
         {/* Back of the card */}
         <Text style={styles.label}>Back (Answer / Definition)</Text>
-        <TextInput
-          style={[styles.input, styles.textArea]}
-          placeholder="Enter answer..."
-          placeholderTextColor={colors.subtle}
-          multiline
-          value={answer}
-          onChangeText={setAnswer}
-        />
+        <View style={[styles.input, styles.textArea]}>
+          <Text style={styles.fieldText}>Enter answer...</Text>
+        </View>
 
-        {/* Add button */}
-        <TouchableOpacity
-          style={styles.button}
-          onPress={addCard}
-          activeOpacity={0.8}
-        >
+        {/* Add button (does nothing, just a design) */}
+        <View style={styles.button}>
           <Text style={styles.buttonText}>+ Add Flashcard</Text>
-        </TouchableOpacity>
+        </View>
       </View>
 
-      {/* List of cards added so far */}
-      <Text style={styles.sectionTitle}>
-        Flashcards in Deck ({cards.length})
-      </Text>
+      {/* Sample flash cards (tap a card to flip it) */}
+      <Text style={styles.sectionTitle}>Flash Cards</Text>
 
-      {cards.map((card, index) => (
-        <View key={card.id} style={styles.cardPreview}>
-          <Text style={styles.cardText}>
-            <Text style={styles.bold}>#{index + 1} Q:</Text> {card.question}
-          </Text>
-          <Text style={styles.cardText}>
-            <Text style={styles.bold}>A:</Text> {card.answer}
-          </Text>
-        </View>
+      {/* One FlashCard for each item in FLASHCARDS */}
+      {FLASHCARDS.map((card) => (
+        <FlashCard
+          key={card.id}
+          question={card.question}
+          answer={card.answer}
+        />
       ))}
     </ScrollView>
   );
@@ -200,11 +179,13 @@ function Progress() {
 
       {/* Average score card with progress bar */}
       <View style={styles.card}>
+        {/* Label and percentage */}
         <View style={styles.progressTop}>
           <Text style={styles.cardTitle}>Average score</Text>
           <Text style={styles.progressPercent}>{average}%</Text>
         </View>
 
+        {/* Progress bar (width follows the average) */}
         <View style={styles.barBackground}>
           <View style={[styles.barFill, { width: `${average}%` }]} />
         </View>
@@ -215,10 +196,12 @@ function Progress() {
 
       {recent.map((item) => (
         <View key={item.id} style={styles.row}>
+          {/* Subject name and date */}
           <View>
             <Text style={styles.rowTitle}>{item.title}</Text>
             <Text style={styles.rowDate}>{item.date}</Text>
           </View>
+          {/* Score on the right */}
           <Text style={styles.rowScore}>{item.score}%</Text>
         </View>
       ))}
@@ -236,6 +219,7 @@ export default function App() {
     <View style={styles.app}>
       {/* Active screen */}
       <View style={styles.screen}>
+        {/* Only the screen that matches the open tab is shown */}
         {tab === "home" && <Home goTo={setTab} />}
         {tab === "create" && <Create />}
         {tab === "progress" && <Progress />}
@@ -243,6 +227,7 @@ export default function App() {
 
       {/* Bottom tab bar */}
       <View style={styles.tabBar}>
+        {/* One button for each item in TABS */}
         {TABS.map((item) => {
           const active = tab === item.key;
           // Blue when selected, gray when not
@@ -254,7 +239,8 @@ export default function App() {
               style={styles.tab}
               onPress={() => setTab(item.key)}
             >
-              <Ionicons name={item.icon} size={22} color={color} />
+              {/* Icon and label (tapping opens that tab) */}
+              <Ionicons name={item.icon} size={30} color={color} />
               <Text style={[styles.tabLabel, { color }]}>{item.label}</Text>
             </TouchableOpacity>
           );
