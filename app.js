@@ -52,6 +52,9 @@ function Home({ goTo }) {
 
   return (
     <ScrollView contentContainerStyle={styles.content}>
+      <View style={{ width: '100%', alignItems: 'flex-end' }}>
+        <Ionicons name="settings-outline" size={22} color={colors.text} />
+      </View>
       {/* Header: title and tagline */}
       <Text style={styles.title}>Welcome</Text>
       <Text style={styles.subtitle}>Study less stress, cram wisely</Text>
