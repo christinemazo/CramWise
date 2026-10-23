@@ -136,7 +136,6 @@ function ProgressScreen({ isDark }) {
   );
 }
 
-// AYOS NA TAB BAR - KAHIT WALA SA styles.js GAGANA!
 function TabBar({ active, onChange, isDark }) {
   return (
     <View style={{
@@ -181,6 +180,8 @@ export default function App() {
         {renderScreen()}
       </View>
       <TabBar active={activeTab} onChange={setActiveTab} isDark={isDark} />
+
+      //Settings Modal
       <Modal visible={showSettings} transparent animationType="slide">
         <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.6)", justifyContent: "center", padding: 20 }}>
           <View style={{ backgroundColor: isDark ? "#17263A" : "#fff", borderRadius: 20, padding: 24 }}>
