@@ -212,26 +212,12 @@ export function getStyles(isDark) {
     // NEW: CREATE SCREEN (real inputs, deck picker, delete)
 
     buttonSpaced: { marginTop: 0, marginBottom: 24 }, // Create Deck button spacing
-    chipRow: { marginBottom: 20, flexGrow: 0 }, // row of deck chips
-    chip: {
-      paddingVertical: 8,
-      paddingHorizontal: 16,
-      borderRadius: 20,
-      borderWidth: 1,
-      borderColor: colors.border,
-      backgroundColor: colors.card,
-      marginRight: 8,
-    }, // one deck chip
-    chipActive: { backgroundColor: colors.accent, borderColor: colors.accent }, // selected chip
-    chipText: { color: colors.text, fontWeight: "600" }, // chip label
-    chipTextActive: { color: "#FFFFFF" }, // label of the selected chip
     deckHeader: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
     }, // deck name on the left, delete on the right
     deleteText: { color: "#EF4444", fontWeight: "600" }, // red "Delete deck"
-    emptyText: { color: colors.muted, marginBottom: 16 }, // "No cards yet" message
     flashTop: {
       flexDirection: "row",
       justifyContent: "space-between",
@@ -251,6 +237,7 @@ export function getStyles(isDark) {
       padding: 16,
       marginBottom: 10,
     }, // one deck on Home
+    deckRowActive: { borderColor: colors.accent }, // selected deck
     deckRowTitle: { color: colors.text, fontWeight: "700", fontSize: 15 }, // deck name
     deckRowCount: { color: colors.muted, fontSize: 13 }, // "5 cards"
   });
