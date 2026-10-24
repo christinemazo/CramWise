@@ -1,26 +1,35 @@
-import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { Ionicons } from "@expo/vector-icons"; // icons
+import { useState } from "react"; // lets screens remember values
 import {
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-  Modal,
-  Switch,
+  Modal, // pop-up window
+  ScrollView, // scrollable screen
+  Switch, // on/off switch
+  Text, // all text
+  TouchableOpacity, // pressable buttons
+  View, // box / container
 } from "react-native";
-import { colors, styles } from "./styles";
+import { getColors, getStyles } from "./styles"; // colors and styles from styles.js
 
+// DATA: sample values shown in the app
+
+// Placeholder scores. Replace with real data once quiz results are stored.
 const SCORES = [
   { id: "1", title: "Mobile Programming", date: "Yesterday", score: 85 },
   { id: "2", title: "Programming Language", date: "Two days ago", score: 75 },
   { id: "3", title: "Software Engineering", date: "Sept 30", score: 80 },
 ];
+
+// Only this many scores are shown on the Progress screen.
 const SCORE_LIMIT = 3;
+
+// The three buttons in the bottom tab bar.
 const TABS = [
   { key: "home", label: "Home", icon: "home" },
   { key: "create", label: "Create", icon: "add-circle" },
   { key: "progress", label: "Progress", icon: "stats-chart" },
 ];
+
+// Sample flashcards shown at the bottom of the Create screen.
 const FLASHCARDS = [
   {
     id: "1",
@@ -29,41 +38,64 @@ const FLASHCARDS = [
   },
 ];
 
+// ============================================================
+// HELPER FUNCTION
+// ============================================================
+
+// Gets the average of a list of scores (returns 0 if the list is empty).
 function getAverage(scores) {
   if (scores.length === 0) return 0;
   const total = scores.reduce((sum, item) => sum + item.score, 0);
   return Math.round(total / scores.length);
 }
 
+// HOME SCREEN
+
 function Home({ goTo, onOpenSettings, isDark }) {
+  const styles = getStyles(isDark);
+  const colors = getColors(isDark);
   const average = getAverage(SCORES);
-  const theme = {
-    title: { color: isDark ? "#fff" : "#0F172A" },
-    subtitle: { color: isDark ? "#94A3B8" : "#64748B" },
-    card: { backgroundColor: isDark ? "#17263A" : "#fff" },
-    cardTitle: { color: isDark ? "#fff" : "#0F172A" },
-    cardBody: { color: isDark ? "#94A3B8" : "#64748B" },
-  };
+
   return (
-    <ScrollView style={{ flex: 1, width: '100%' }} contentContainerStyle={[styles.content, { backgroundColor: isDark ? "#0F1629" : "#F8FAFC", flexGrow: 1, minHeight: '100%' }]}>
-      <View style={{ width: "100%", alignItems: "flex-end" }}>
-        <TouchableOpacity onPress={onOpenSettings} style={{ padding: 8 }}>
-          <Ionicons name="settings-outline" size={22} color={isDark ? "#fff" : "#0F172A"} />
+    <ScrollView contentContainerStyle={styles.content}>
+      {/* Settings icon: opens the settings pop-up */}
+      <View style={styles.settingsRow}>
+        <TouchableOpacity
+          style={styles.settingsButton}
+          onPress={onOpenSettings}
+        >
+          <Ionicons name="settings-outline" size={22} color={colors.text} />
         </TouchableOpacity>
       </View>
-      <Text style={[styles.title, theme.title]}>Welcome</Text>
-      <Text style={[styles.subtitle, theme.subtitle]}>Study less stress, cram wisely</Text>
-      <View style={[styles.card, theme.card]}>
+
+      {/* Header: title and tagline */}
+      <Text style={styles.title}>Welcome</Text>
+      <Text style={styles.subtitle}>Study less stress, cram wisely</Text>
+
+      {/* Intro card */}
+      <View style={styles.card}>
         <Text style={styles.cardIcon}>📚</Text>
-        <Text style={[styles.cardTitle, theme.cardTitle]}>Study smarter with CramWise</Text>
-        <Text style={[styles.cardBody, theme.cardBody]}>Review your flashcards, take quizzes, and track your progress.</Text>
+        <Text style={styles.cardTitle}>Study smarter with CramWise</Text>
+        <Text style={styles.cardBody}>
+          Review your flashcards, take quizzes, and track your progress.
+        </Text>
       </View>
-      <Text style={[styles.sectionTitle, theme.title]}>Progress overview</Text>
-      <TouchableOpacity style={[styles.card, theme.card]} activeOpacity={0.8} onPress={() => goTo("progress")}>
+
+      {/* Progress overview: tapping it opens the Progress tab */}
+      <Text style={styles.sectionTitle}>Progress overview</Text>
+
+      <TouchableOpacity
+        style={styles.card}
+        activeOpacity={0.8}
+        onPress={() => goTo("progress")}
+      >
+        {/* Label and percentage */}
         <View style={styles.progressTop}>
-          <Text style={[styles.cardTitle, theme.cardTitle]}>Average score</Text>
+          <Text style={styles.cardTitle}>Average score</Text>
           <Text style={styles.progressPercent}>{average}%</Text>
         </View>
+
+        {/* Progress bar (width follows the average) */}
         <View style={styles.barBackground}>
           <View style={[styles.barFill, { width: `${average}%` }]} />
         </View>
@@ -72,137 +104,223 @@ function Home({ goTo, onOpenSettings, isDark }) {
   );
 }
 
+// FLASH CARD
+
+// One flashcard. Tap it to flip between the question and the answer.
 function FlashCard({ question, answer, isDark }) {
+  const styles = getStyles(isDark);
+
+  // false = showing the question, true = showing the answer
   const [flashed, setFlashed] = useState(false);
+
   return (
-    <TouchableOpacity style={[styles.flashCard, { backgroundColor: isDark ? "#17263A" : "#fff" }, flashed && styles.flashCardBack]} activeOpacity={0.9} onPress={() => setFlashed(!flashed)}>
+    <TouchableOpacity
+      style={[styles.flashCard, flashed && styles.flashCardBack]}
+      activeOpacity={0.9}
+      onPress={() => setFlashed(!flashed)}
+    >
+      {/* Small label: which side is showing */}
       <Text style={styles.flashSide}>{flashed ? "ANSWER" : "QUESTION"}</Text>
-      <Text style={[styles.flashText, { color: isDark ? "#fff" : "#0F172A" }]}>{flashed ? answer : question}</Text>
-      <Text style={styles.flashHint}>Tap to see the answer</Text>
+
+      {/* The question or the answer */}
+      <Text style={styles.flashText}>{flashed ? answer : question}</Text>
+
+      {/* Hint for the user */}
+      <Text style={styles.flashHint}>
+        {flashed ? "Tap to see the question" : "Tap to see the answer"}
+      </Text>
     </TouchableOpacity>
   );
 }
 
+// CREATE SCREEN (the form is static: nothing to type or save)
+
 function Create({ isDark }) {
-  const theme = {
-    bg: { backgroundColor: isDark ? "#0F1629" : "#F8FAFC" },
-    title: { color: isDark ? "#fff" : "#0F172A" },
-    subtitle: { color: isDark ? "#94A3B8" : "#64748B" },
-    card: { backgroundColor: isDark ? "#17263A" : "#fff" },
-    label: { color: isDark ? "#fff" : "#0F172A" },
-    input: { backgroundColor: isDark ? "#0F1629" : "#F1F5F9" },
-  };
+  const styles = getStyles(isDark);
+
   return (
-    <ScrollView style={{ flex: 1, width: '100%' }} contentContainerStyle={[styles.content, theme.bg, { flexGrow: 1, minHeight: '100%' }]}>
-      <Text style={[styles.title, theme.title]}>Create New Deck</Text>
-      <Text style={[styles.subtitle, theme.subtitle]}>Add cards to your deck</Text>
-      <Text style={[styles.label, theme.label]}>Deck Title</Text>
-      <View style={[styles.input, theme.input]}><Text style={styles.fieldText}>e.g., Mobile Programming</Text></View>
-      <View style={[styles.card, theme.card]}>
-        <Text style={[styles.cardTitle, theme.label]}>Add Flashcard</Text>
-        <Text style={[styles.label, theme.label]}>Front (Question / Term)</Text>
-        <View style={[styles.input, styles.textArea, theme.input]}><Text style={styles.fieldText}>Enter question...</Text></View>
-        <Text style={[styles.label, theme.label]}>Back (Answer / Definition)</Text>
-        <View style={[styles.input, styles.textArea, theme.input]}><Text style={styles.fieldText}>Enter answer...</Text></View>
-        <TouchableOpacity style={styles.button} activeOpacity={0.8}><Text style={styles.buttonText}>Add Card</Text></TouchableOpacity>
+    <ScrollView contentContainerStyle={styles.content}>
+      {/* Header */}
+      <Text style={styles.title}>Create New Deck</Text>
+      <Text style={styles.subtitle}>Add cards to your deck</Text>
+
+      {/* Deck title field (display only) */}
+      <Text style={styles.label}>Deck Title</Text>
+      <View style={styles.input}>
+        <Text style={styles.fieldText}>e.g., Mobile Programming</Text>
       </View>
-      {FLASHCARDS.map((card) => (<FlashCard key={card.id} question={card.question} answer={card.answer} isDark={isDark} />))}
+
+      {/* Add flashcard form (display only) */}
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Add Flashcard</Text>
+
+        {/* Front of the card */}
+        <Text style={styles.label}>Front (Question / Term)</Text>
+        <View style={[styles.input, styles.textArea]}>
+          <Text style={styles.fieldText}>Enter question...</Text>
+        </View>
+
+        {/* Back of the card */}
+        <Text style={styles.label}>Back (Answer / Definition)</Text>
+        <View style={[styles.input, styles.textArea]}>
+          <Text style={styles.fieldText}>Enter answer...</Text>
+        </View>
+
+        {/* Add button (does nothing yet, just a design) */}
+        <TouchableOpacity style={styles.button} activeOpacity={0.8}>
+          <Text style={styles.buttonText}>Add Card</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* One FlashCard for each item in FLASHCARDS (tap a card to flip it) */}
+      {FLASHCARDS.map((card) => (
+        <FlashCard
+          key={card.id}
+          question={card.question}
+          answer={card.answer}
+          isDark={isDark}
+        />
+      ))}
     </ScrollView>
   );
 }
 
+// PROGRESS SCREEN
+
 function ProgressScreen({ isDark }) {
+  const styles = getStyles(isDark);
   const average = getAverage(SCORES);
-  const theme = {
-    bg: { backgroundColor: isDark ? "#0F1629" : "#F8FAFC" },
-    title: { color: isDark ? "#fff" : "#0F172A" },
-    subtitle: { color: isDark ? "#94A3B8" : "#64748B" },
-    card: { backgroundColor: isDark ? "#17263A" : "#fff" },
-    cardTitle: { color: isDark ? "#fff" : "#0F172A" },
-    cardBody: { color: isDark ? "#94A3B8" : "#64748B" },
-  };
+
+  // Take only the first SCORE_LIMIT scores
+  const recent = SCORES.slice(0, SCORE_LIMIT);
+
   return (
-    <ScrollView style={{ flex: 1, width: '100%' }} contentContainerStyle={[styles.content, theme.bg, { flexGrow: 1, minHeight: '100%' }]}>
-      <Text style={[styles.title, theme.title]}>Progress</Text>
-      <Text style={[styles.subtitle, theme.subtitle]}>Your average is {average}%</Text>
-      {SCORES.slice(0, SCORE_LIMIT).map((item) => (
-        <View key={item.id} style={[styles.card, theme.card]}>
-          <View style={styles.progressTop}><Text style={[styles.cardTitle, theme.cardTitle]}>{item.title}</Text><Text style={styles.progressPercent}>{item.score}%</Text></View>
-          <Text style={[styles.cardBody, theme.cardBody]}>{item.date}</Text>
-          <View style={styles.barBackground}><View style={[styles.barFill, { width: `${item.score}%` }]} /></View>
+    <ScrollView contentContainerStyle={styles.content}>
+      {/* Header */}
+      <Text style={styles.title}>Progress</Text>
+      <Text style={styles.subtitle}>Your average is {average}%</Text>
+
+      {/* One card per score (limited by SCORE_LIMIT) */}
+      {recent.map((item) => (
+        <View key={item.id} style={styles.card}>
+          {/* Subject name and score */}
+          <View style={styles.progressTop}>
+            <Text style={styles.cardTitle}>{item.title}</Text>
+            <Text style={styles.progressPercent}>{item.score}%</Text>
+          </View>
+
+          {/* Date */}
+          <Text style={styles.cardBody}>{item.date}</Text>
+
+          {/* Progress bar (width follows the score) */}
+          <View style={styles.barBackground}>
+            <View style={[styles.barFill, { width: `${item.score}%` }]} />
+          </View>
         </View>
       ))}
     </ScrollView>
   );
 }
 
+// TAB BAR (bottom navigation)
+
 function TabBar({ active, onChange, isDark }) {
+  const styles = getStyles(isDark);
+  const colors = getColors(isDark);
+
   return (
-    <View style={{
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      alignItems: 'center',
-      backgroundColor: isDark ? "#17263A" : "#fff",
-      borderTopWidth: 1,
-      borderTopColor: isDark ? "#25364D" : "#E2E8F0",
-      paddingVertical: 10,
-      paddingBottom: 15,
-      width: '100%',
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-    }}>
-      {TABS.map((tab) => (
-        <TouchableOpacity key={tab.key} style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} activeOpacity={0.7} onPress={() => onChange(tab.key)}>
-          <Ionicons name={tab.icon} size={26} color={active === tab.key ? "#208AEF" : "#94A3B8"} />
-          <Text style={{ fontSize: 11, marginTop: 3, color: active === tab.key ? "#208AEF" : "#94A3B8", fontWeight: active === tab.key ? '700' : '400' }}>{tab.label}</Text>
-        </TouchableOpacity>
-      ))}
+    <View style={styles.tabBar}>
+      {/* One button for each item in TABS */}
+      {TABS.map((tab) => {
+        // Blue when selected, gray when not
+        const color = active === tab.key ? colors.accent : colors.tabInactive;
+
+        return (
+          <TouchableOpacity
+            key={tab.key}
+            style={styles.tab}
+            activeOpacity={0.7}
+            onPress={() => onChange(tab.key)}
+          >
+            <Ionicons name={tab.icon} size={26} color={color} />
+            <Text style={[styles.tabLabel, { color }]}>{tab.label}</Text>
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 }
 
+// APP (main component: active screen + tab bar + settings)
+
 export default function App() {
+  // Which tab is open right now ("home", "create" or "progress")
   const [activeTab, setActiveTab] = useState("home");
+
+  // true = dark mode, false = light mode
   const [isDark, setIsDark] = useState(true);
+
+  // Is the settings pop-up open?
   const [showSettings, setShowSettings] = useState(false);
 
+  const styles = getStyles(isDark);
+  const colors = getColors(isDark);
+
+  // Picks the screen that matches the open tab
   const renderScreen = () => {
     if (activeTab === "create") return <Create isDark={isDark} />;
     if (activeTab === "progress") return <ProgressScreen isDark={isDark} />;
-    return <Home goTo={setActiveTab} onOpenSettings={() => setShowSettings(true)} isDark={isDark} />;
+    return (
+      <Home
+        goTo={setActiveTab}
+        onOpenSettings={() => setShowSettings(true)}
+        isDark={isDark}
+      />
+    );
   };
 
   return (
-    <View style={[styles.app, { flex: 1, backgroundColor: isDark ? "#0F1629" : "#F8FAFC", width: '100%', height: '100%' }]}>
-      <View style={{ flex: 1, paddingBottom: 70, width: '100%' }}>
-        {renderScreen()}
-      </View>
+    <View style={styles.app}>
+      {/* Active screen */}
+      <View style={styles.screen}>{renderScreen()}</View>
+
+      {/* Bottom tab bar */}
       <TabBar active={activeTab} onChange={setActiveTab} isDark={isDark} />
 
-      //Settings Modal
+      {/* Settings pop-up */}
       <Modal visible={showSettings} transparent animationType="slide">
-        <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.6)", justifyContent: "center", padding: 20 }}>
-          <View style={{ backgroundColor: isDark ? "#17263A" : "#fff", borderRadius: 20, padding: 24 }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 16 }}>
-              <Text style={{ fontSize: 20, fontWeight: "700", color: isDark ? "#fff" : "#0F172A" }}>Settings</Text>
-              <TouchableOpacity onPress={() => setShowSettings(false)}><Ionicons name="close" size={24} color={isDark ? "#fff" : "#0F172A"} /></TouchableOpacity>
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalCard}>
+            {/* Title and close icon */}
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Settings</Text>
+              <TouchableOpacity onPress={() => setShowSettings(false)}>
+                <Ionicons name="close" size={24} color={colors.text} />
+              </TouchableOpacity>
             </View>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: isDark ? "#25364D" : "#E2E8F0" }}>
-              <Text style={{ color: isDark ? "#fff" : "#0F172A", fontWeight: "600" }}>Light Mode</Text>
-              <Switch value={!isDark} onValueChange={(v) => { if(v) setIsDark(false); }} />
+
+            {/* Dark mode switch */}
+            <View style={styles.settingRow}>
+              <Text style={styles.settingLabel}>Dark Mode</Text>
+              <Switch value={isDark} onValueChange={setIsDark} />
             </View>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", paddingVertical: 12 }}>
-              <Text style={{ color: isDark ? "#fff" : "#0F172A", fontWeight: "600" }}>Dark Mode</Text>
-              <Switch value={isDark} onValueChange={(v) => { if(v) setIsDark(true); }} />
+
+            {/* About box */}
+            <View style={styles.aboutBox}>
+              <Text style={styles.aboutTitle}>About CramWise</Text>
+              <Text style={styles.aboutBody}>
+                CramWise is your smart study companion. Review flashcards, take
+                quizzes, and track your progress. Study less stress, cram
+                wisely.
+              </Text>
             </View>
-            <View style={{ backgroundColor: isDark ? "#0F1629" : "#F1F5F9", borderRadius: 12, padding: 16, marginTop: 12 }}>
-              <Text style={{ fontWeight: "700", color: isDark ? "#fff" : "#0F172A", marginBottom: 6 }}>About CramWise</Text>
-              <Text style={{ color: isDark ? "#94A3B8" : "#64748B", fontSize: 13, lineHeight: 20 }}>CramWise is your smart study companion. Review flashcards, take quizzes, and track your progress. Study less stress, cram wisely.</Text>
-            </View>
-            <TouchableOpacity onPress={() => setShowSettings(false)} style={{ backgroundColor: "#208AEF", padding: 12, borderRadius: 12, alignItems: "center", marginTop: 20 }}>
-              <Text style={{ color: "#fff", fontWeight: "700" }}>Close</Text>
+
+            {/* Close button */}
+            <TouchableOpacity
+              style={[styles.button, styles.closeButton]}
+              onPress={() => setShowSettings(false)}
+            >
+              <Text style={styles.buttonText}>Close</Text>
             </TouchableOpacity>
           </View>
         </View>
