@@ -1,6 +1,3 @@
-// ============================================================
-// APP: picks the open tab, shows the tab bar and settings pop-up
-// ============================================================
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Modal, Switch, Text, TouchableOpacity, View } from "react-native";

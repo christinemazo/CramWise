@@ -117,7 +117,7 @@ export function getStyles(isDark) {
       borderWidth: 1,
       borderColor: colors.border,
     }, // box that looks like a text field
-    textArea: { minHeight: 70 }, // taller box for question and answer
+    textArea: { minHeight: 70, textAlignVertical: "top" }, // taller box for question and answer
     fieldText: { color: colors.subtle }, // placeholder-style text in the static fields
     button: {
       backgroundColor: colors.accent,
@@ -208,5 +208,50 @@ export function getStyles(isDark) {
     aboutTitle: { fontWeight: "700", color: colors.text, marginBottom: 6 }, // heading inside the About box
     aboutBody: { color: colors.muted, fontSize: 13, lineHeight: 20 }, // paragraph inside the About box
     closeButton: { marginTop: 20 }, // extra space above the Close button
+
+    // NEW: CREATE SCREEN (real inputs, deck picker, delete)
+
+    buttonSpaced: { marginTop: 0, marginBottom: 24 }, // Create Deck button spacing
+    chipRow: { marginBottom: 20, flexGrow: 0 }, // row of deck chips
+    chip: {
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.card,
+      marginRight: 8,
+    }, // one deck chip
+    chipActive: { backgroundColor: colors.accent, borderColor: colors.accent }, // selected chip
+    chipText: { color: colors.text, fontWeight: "600" }, // chip label
+    chipTextActive: { color: "#FFFFFF" }, // label of the selected chip
+    deckHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    }, // deck name on the left, delete on the right
+    deleteText: { color: "#EF4444", fontWeight: "600" }, // red "Delete deck"
+    emptyText: { color: colors.muted, marginBottom: 16 }, // "No cards yet" message
+    flashTop: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    }, // QUESTION label + trash icon
+
+    // NEW: HOME deck list
+
+    deckRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      backgroundColor: colors.card,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: colors.border,
+      padding: 16,
+      marginBottom: 10,
+    }, // one deck on Home
+    deckRowTitle: { color: colors.text, fontWeight: "700", fontSize: 15 }, // deck name
+    deckRowCount: { color: colors.muted, fontSize: 13 }, // "5 cards"
   });
 }
