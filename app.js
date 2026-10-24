@@ -1,23 +1,18 @@
-import { Ionicons } from "@expo/vector-icons"; // icons
-import { useState } from "react"; // lets the app remember values
-import {
-  Modal, // pop-up window
-  Switch, // on/off switch
-  Text, // all text
-  TouchableOpacity, // pressable buttons
-  View, // box / container
-} from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"; // keeps content out of the notch and system bars
-import TabBar from "./components/TabBar"; // bottom navigation
-import CreateScreen from "./screens/CreateScreen"; // Create tab
-import HomeScreen from "./screens/HomeScreen"; // Home tab
-import ProgressScreen from "./screens/ProgressScreen"; // Progress tab
-import { getColors, getStyles } from "./styles"; // colors and styles
+// ============================================================
+// APP: picks the open tab, shows the tab bar and settings pop-up
+// ============================================================
+import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
+import { Modal, Switch, Text, TouchableOpacity, View } from "react-native";
+import TabBar from "./components/TabBar";
+import { DeckProvider } from "./context/DeckContext";
+import CreateScreen from "./screens/CreateScreen";
+import HomeScreen from "./screens/HomeScreen";
+import ProgressScreen from "./screens/ProgressScreen";
+import { getColors, getStyles } from "./styles";
 
-// APP CONTENT (active screen + tab bar + settings)
-
-function AppContent() {
-  // Which tab is open right now ("home", "create" or "progress")
+export default function App() {
+  // Which tab is open ("home", "create" or "progress")
   const [activeTab, setActiveTab] = useState("home");
 
   // true = dark mode, false = light mode
@@ -43,60 +38,48 @@ function AppContent() {
   };
 
   return (
-    <SafeAreaView style={styles.app}>
-      {/* Active screen */}
-      <View style={styles.screen}>{renderScreen()}</View>
+    // DeckProvider shares the saved decks with every screen
+    <DeckProvider>
+      <View style={styles.app}>
+        <View style={styles.screen}>{renderScreen()}</View>
 
-      {/* Bottom tab bar */}
-      <TabBar active={activeTab} onChange={setActiveTab} isDark={isDark} />
+        <TabBar active={activeTab} onChange={setActiveTab} isDark={isDark} />
 
-      {/* Settings pop-up */}
-      <Modal visible={showSettings} transparent animationType="slide">
-        <View style={styles.modalBackdrop}>
-          <View style={styles.modalCard}>
-            {/* Title and close icon */}
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Settings</Text>
-              <TouchableOpacity onPress={() => setShowSettings(false)}>
-                <Ionicons name="close" size={24} color={colors.text} />
+        {/* Settings pop-up */}
+        <Modal visible={showSettings} transparent animationType="slide">
+          <View style={styles.modalBackdrop}>
+            <View style={styles.modalCard}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Settings</Text>
+                <TouchableOpacity onPress={() => setShowSettings(false)}>
+                  <Ionicons name="close" size={24} color={colors.text} />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.settingRow}>
+                <Text style={styles.settingLabel}>Dark Mode</Text>
+                <Switch value={isDark} onValueChange={setIsDark} />
+              </View>
+
+              <View style={styles.aboutBox}>
+                <Text style={styles.aboutTitle}>About CramWise</Text>
+                <Text style={styles.aboutBody}>
+                  CramWise is your smart study companion. Review flashcards,
+                  take quizzes, and track your progress. Study less stress, cram
+                  wisely.
+                </Text>
+              </View>
+
+              <TouchableOpacity
+                style={[styles.button, styles.closeButton]}
+                onPress={() => setShowSettings(false)}
+              >
+                <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             </View>
-
-            {/* Dark mode switch */}
-            <View style={styles.settingRow}>
-              <Text style={styles.settingLabel}>Dark Mode</Text>
-              <Switch value={isDark} onValueChange={setIsDark} />
-            </View>
-
-            {/* About box */}
-            <View style={styles.aboutBox}>
-              <Text style={styles.aboutTitle}>About CramWise</Text>
-              <Text style={styles.aboutBody}>
-                CramWise is your smart study companion. Review flashcards, take
-                quizzes, and track your progress. Study less stress, cram
-                wisely.
-              </Text>
-            </View>
-
-            {/* Close button */}
-            <TouchableOpacity
-              style={[styles.button, styles.closeButton]}
-              onPress={() => setShowSettings(false)}
-            >
-              <Text style={styles.buttonText}>Close</Text>
-            </TouchableOpacity>
           </View>
-        </View>
-      </Modal>
-    </SafeAreaView>
-  );
-}
-
-// APP (wraps everything in SafeAreaProvider so SafeAreaView works)
-export default function App() {
-  return (
-    <SafeAreaProvider>
-      <AppContent />
-    </SafeAreaProvider>
+        </Modal>
+      </View>
+    </DeckProvider>
   );
 }
