@@ -1,168 +1,212 @@
 import { StyleSheet } from "react-native";
 
 // COLORS
-// Change a color here and it updates everywhere in the app.
+// One set for dark mode and one for light mode.
 
-export const colors = {
+export const darkColors = {
   background: "#0F1629", // screen background (dark navy)
-  card: "#17263A", // cards and rows
+  card: "#17263A", // cards, rows and the tab bar
   border: "#25364D", // card borders and bar background
   text: "#F8FAFC", // main text (almost white)
   muted: "#94A3B8", // secondary text (light gray-blue)
   subtle: "#78879B", // small hints and placeholders
   accent: "#208AEF", // blue used for buttons, bars and scores
+  input: "#0F1629", // background of the fields
+  flashBack: "#12395F", // flash card color when showing the answer
+  tabInactive: "#94A3B8", // tab icon color when not selected
 };
 
-export const styles = StyleSheet.create({
-  // LAYOUT: overall structure of the app
+export const lightColors = {
+  background: "#F8FAFC", // screen background (very light gray)
+  card: "#FFFFFF", // cards, rows and the tab bar
+  border: "#E2E8F0", // card borders and bar background
+  text: "#0F172A", // main text (almost black)
+  muted: "#64748B", // secondary text (gray)
+  subtle: "#94A3B8", // small hints and placeholders
+  accent: "#208AEF", // blue used for buttons, bars and scores
+  input: "#F1F5F9", // background of the fields
+  flashBack: "#DBEAFE", // flash card color when showing the answer
+  tabInactive: "#94A3B8", // tab icon color when not selected
+};
 
-  app: { flex: 1, backgroundColor: colors.background }, // whole app
-  screen: { flex: 1 }, // area above the tab bar
-  content: { paddingHorizontal: 20, paddingTop: 48, paddingBottom: 40 }, // spacing inside each screen
+// Gives back the color set that matches the current mode.
+export function getColors(isDark) {
+  return isDark ? darkColors : lightColors;
+}
 
-  // TEXT: titles, subtitles and labels
+// Gives back all the styles for the current mode.
+// In app.js:  const styles = getStyles(isDark);
+export function getStyles(isDark) {
+  const colors = getColors(isDark);
 
-  title: { fontSize: 30, fontWeight: "800", color: colors.text }, // big screen title
-  subtitle: {
-    fontSize: 14,
-    color: colors.muted,
-    marginTop: 2,
-    marginBottom: 24,
-  }, // small line under the title
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#FFFFFF",
-    marginTop: 8,
-    marginBottom: 12,
-  }, // heading for a section
-  label: { fontSize: 13, color: colors.muted, marginBottom: 6 }, // text above a field
+  return StyleSheet.create({
+    // LAYOUT: overall structure of the app
 
-  // CARDS: rounded boxes used on Home, Create and Progress
+    app: { flex: 1, backgroundColor: colors.background }, // whole app
+    screen: { flex: 1 }, // area above the tab bar
+    content: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 }, // spacing inside each screen
+    settingsRow: { alignItems: "flex-end" }, // puts the settings icon on the right
+    settingsButton: { padding: 8 }, // tap area around the settings icon
 
-  card: {
-    backgroundColor: colors.card,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: 20,
-    marginBottom: 24,
-  }, // main card box
-  cardIcon: { fontSize: 28, marginBottom: 12 }, // emoji on the Home card
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: colors.text,
-    marginBottom: 6,
-  }, // title inside a card
-  cardBody: { fontSize: 14, lineHeight: 20, color: colors.muted }, // paragraph inside a card
+    // TEXT: titles, subtitles and labels
 
-  // PROGRESS BAR: used on Home and Progress
+    title: { fontSize: 30, fontWeight: "800", color: colors.text }, // big screen title
+    subtitle: {
+      fontSize: 14,
+      color: colors.muted,
+      marginTop: 2,
+      marginBottom: 24,
+    }, // small line under the title
+    sectionTitle: {
+      fontSize: 18,
+      fontWeight: "700",
+      color: colors.text,
+      marginTop: 8,
+      marginBottom: 12,
+    }, // heading for a section
+    label: { fontSize: 13, color: colors.text, marginBottom: 6 }, // text above a field
 
-  progressTop: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  }, // label on the left, percent on the right
-  progressPercent: { fontSize: 25, fontWeight: "700", color: colors.accent }, // big % number
-  barBackground: {
-    height: 9,
-    backgroundColor: colors.border,
-    borderRadius: 10,
-    overflow: "hidden",
-    marginTop: 16,
-  }, // empty bar
-  barFill: { height: "100%", backgroundColor: colors.accent, borderRadius: 10 }, // filled part (width is set in app.js)
+    // CARDS: rounded boxes used on Home, Create and Progress
 
-  // SCORE ROWS: list on the Progress screen
+    card: {
+      backgroundColor: colors.card,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: colors.border,
+      padding: 20,
+      marginBottom: 24,
+    }, // main card box
+    cardIcon: { fontSize: 28, marginBottom: 12 }, // emoji on the Home card
+    cardTitle: {
+      fontSize: 18,
+      fontWeight: "700",
+      color: colors.text,
+      marginBottom: 6,
+    }, // title inside a card
+    cardBody: { fontSize: 14, lineHeight: 20, color: colors.muted }, // paragraph inside a card
 
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: 14,
-    marginBottom: 10,
-  }, // one score row
-  rowTitle: { fontSize: 15, fontWeight: "700", color: colors.text }, // subject name
-  rowDate: { fontSize: 12, color: colors.subtle, marginTop: 4 }, // date under the name
-  rowScore: { fontSize: 15, fontWeight: "700", color: colors.accent }, // score on the right
+    // PROGRESS BAR: used on Home and Progress
 
-  // CREATE FORM: the static fields and button on the Create screen
+    progressTop: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    }, // label on the left, percent on the right
+    progressPercent: { fontSize: 25, fontWeight: "700", color: colors.accent }, // big % number
+    barBackground: {
+      height: 9,
+      backgroundColor: colors.border,
+      borderRadius: 10,
+      overflow: "hidden",
+      marginTop: 16,
+    }, // empty bar
+    barFill: {
+      height: "100%",
+      backgroundColor: colors.accent,
+      borderRadius: 10,
+    }, // filled part (width is set in app.js)
 
-  input: {
-    backgroundColor: colors.background,
-    color: colors.text,
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: colors.border,
-  }, // box that looks like a text field
-  textArea: { minHeight: 70 }, // taller box for question and answer
-  fieldText: { color: colors.subtle }, // placeholder-style text in the static fields
-  button: {
-    backgroundColor: colors.accent,
-    padding: 12,
-    borderRadius: 12,
-    alignItems: "center",
-    marginTop: 8,
-  }, // "+ Add Flashcard" button
-  buttonText: { color: "#FFFFFF", fontWeight: "700" }, // text inside the button
-  cardPreview: {
-    backgroundColor: colors.card,
-    padding: 14,
-    borderRadius: 16,
-    marginBottom: 10,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.accent,
-    borderWidth: 1,
-    borderColor: colors.border,
-  }, // one added flashcard in a list (not used right now)
-  cardText: { color: colors.text, fontSize: 14, marginBottom: 4 }, // question / answer text (not used right now)
-  bold: { fontWeight: "700", color: colors.accent }, // "Q:" and "A:" labels (not used right now)
+    // CREATE FORM: the static fields and button on the Create screen
 
-  // FLASH CARDS: tap to flip between question and answer
+    input: {
+      backgroundColor: colors.input,
+      color: colors.text,
+      borderRadius: 12,
+      padding: 12,
+      marginBottom: 16,
+      borderWidth: 1,
+      borderColor: colors.border,
+    }, // box that looks like a text field
+    textArea: { minHeight: 70 }, // taller box for question and answer
+    fieldText: { color: colors.subtle }, // placeholder-style text in the static fields
+    button: {
+      backgroundColor: colors.accent,
+      padding: 12,
+      borderRadius: 12,
+      alignItems: "center",
+      marginTop: 8,
+    }, // blue button
+    buttonText: { color: "#FFFFFF", fontWeight: "700" }, // text inside the button
 
-  flashCard: {
-    minHeight: 150,
-    backgroundColor: colors.card,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: 20,
-    marginBottom: 14,
-    justifyContent: "space-between",
-  }, // card showing the question
-  flashCardBack: { backgroundColor: "#12395F", borderColor: colors.accent }, // blue tint when showing the answer
-  flashSide: {
-    fontSize: 11,
-    fontWeight: "700",
-    letterSpacing: 1,
-    color: colors.accent,
-  }, // "QUESTION" / "ANSWER" label
-  flashText: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: colors.text,
-    textAlign: "center",
-    marginVertical: 14,
-  }, // text on the card
-  flashHint: { fontSize: 12, color: colors.subtle, textAlign: "center" }, // "Tap to flip"
+    // FLASH CARDS: tap to flip between question and answer
 
-  // TAB BAR: bottom navigation
+    flashCard: {
+      minHeight: 150,
+      backgroundColor: colors.card,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: colors.border,
+      padding: 20,
+      marginBottom: 14,
+      justifyContent: "space-between",
+    }, // card showing the question
+    flashCardBack: {
+      backgroundColor: colors.flashBack,
+      borderColor: colors.accent,
+    }, // tint when showing the answer
+    flashSide: {
+      fontSize: 11,
+      fontWeight: "700",
+      letterSpacing: 1,
+      color: colors.accent,
+    }, // "QUESTION" / "ANSWER" label
+    flashText: {
+      fontSize: 18,
+      fontWeight: "700",
+      color: colors.text,
+      textAlign: "center",
+      marginVertical: 14,
+    }, // text on the card
+    flashHint: { fontSize: 12, color: colors.subtle, textAlign: "center" }, // "Tap to see the ..." hint
 
-  tabBar: {
-    flexDirection: "row",
-    height: 70,
-    paddingVertical: 8,
-    backgroundColor: "#0F172A",
-    borderTopWidth: 1,
-    borderTopColor: "#1E293B",
-  }, // the bar itself
-  tab: { flex: 1, alignItems: "center", justifyContent: "center" }, // one tab button
-  tabLabel: { fontSize: 11, marginTop: 2 }, // text under each tab icon
-});
+    // TAB BAR: bottom navigation
+
+    tabBar: {
+      flexDirection: "row",
+      height: 70,
+      paddingVertical: 8,
+      backgroundColor: colors.card,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+    }, // the bar itself
+    tab: { flex: 1, alignItems: "center", justifyContent: "center" }, // one tab button
+    tabLabel: { fontSize: 11, marginTop: 2 }, // text under each tab icon
+
+    // SETTINGS POP-UP
+
+    modalBackdrop: {
+      flex: 1,
+      backgroundColor: "rgba(0,0,0,0.6)",
+      justifyContent: "center",
+      padding: 20,
+    }, // dark layer behind the pop-up
+    modalCard: {
+      backgroundColor: colors.card,
+      borderRadius: 20,
+      padding: 24,
+    }, // the pop-up box
+    modalHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginBottom: 16,
+    },
+    // title on the left, close icon on the right
+    modalTitle: { fontSize: 20, fontWeight: "700", color: colors.text }, // "Settings"
+    settingRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      paddingVertical: 12,
+    }, // one setting: label on the left, switch on the right
+    settingLabel: { color: colors.text, fontWeight: "600" }, // setting name
+    aboutBox: {
+      backgroundColor: colors.input,
+      borderRadius: 12,
+      padding: 16,
+      marginTop: 12,
+    }, // "About CramWise" box
+    aboutTitle: { fontWeight: "700", color: colors.text, marginBottom: 6 }, // heading inside the About box
+    aboutBody: { color: colors.muted, fontSize: 13, lineHeight: 20 }, // paragraph inside the About box
+    closeButton: { marginTop: 20 }, // extra space above the Close button
+  });
+}
