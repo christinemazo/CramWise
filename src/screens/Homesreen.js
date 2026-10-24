@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { useDecks } from "../context/DeckContext";
-import { getColors, getStyles } from "../styles";
+import { getColors, getStyles } from "../../styles";
+import { useDecks } from "../contexts/Deckcontext";
 
 export default function HomeScreen({ goTo, onOpenSettings, isDark }) {
   const styles = getStyles(isDark);

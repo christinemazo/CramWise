@@ -2,7 +2,7 @@
 
 import { Ionicons } from "@expo/vector-icons";
 import { Text, TouchableOpacity, View } from "react-native";
-import { getColors, getStyles } from "../styles";
+import { getColors, getStyles } from "../../styles";
 
 // The three buttons in the bottom tab bar.
 export const TABS = [

@@ -8,9 +8,9 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import FlashCard from "../components/FlashCard";
-import { useDecks } from "../context/DeckContext";
-import { getColors, getStyles } from "../styles";
+import { getColors, getStyles } from "../../styles";
+import FlashCard from "../components/Flashcard";
+import { useDecks } from "../contexts/Deckcontext";
 
 export default function CreateScreen({ isDark }) {
   const styles = getStyles(isDark);

@@ -1,6 +1,6 @@
 import { ScrollView, Text, View } from "react-native";
-import { useDecks } from "../context/DeckContext";
-import { getStyles } from "../styles";
+import { getStyles } from "../../styles";
+import { useDecks } from "../contexts/Deckcontext";
 
 export default function ProgressScreen({ isDark }) {
   const styles = getStyles(isDark);
