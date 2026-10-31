@@ -10,7 +10,7 @@ export function DeckProvider({ children }) {
   // decks look like: { id, title, cards: [{ id, front, back }] }
   const [decks, setDecks] = useState([]);
 
-  // scores look like: { id, title, date, score }  (filled by the quiz later)
+  // scores look like: { id, title, points, date, score }  (typed in on the Progress screen)
   const [scores, setScores] = useState([]);
 
   // true after saved data is read (stops an empty list from overwriting it)
@@ -71,6 +71,27 @@ export function DeckProvider({ children }) {
     );
   };
 
+  // Adds a quiz score at the top of the list (newest first)
+  // Example: addScore("Math", 12, 15) saves "12/15" and 80%
+  const addScore = (title, got, total) => {
+    const newScore = {
+      id: Date.now().toString(),
+      title,
+      points: `${got}/${total}`, // what the user got, like 12/15
+      score: Math.round((got / total) * 100), // percent (used for the bar and average)
+      date: new Date().toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      }),
+    };
+    setScores((current) => [newScore, ...current]);
+  };
+
+  // Removes one score
+  const deleteScore = (scoreId) => {
+    setScores((current) => current.filter((item) => item.id !== scoreId));
+  };
+
   // Average of all saved scores (0 if there are none).
   const average =
     scores.length === 0
@@ -87,6 +108,8 @@ export function DeckProvider({ children }) {
         deleteDeck,
         addCard,
         deleteCard,
+        addScore,
+        deleteScore,
       }}
     >
       {children}

@@ -224,7 +224,7 @@ export function getStyles(isDark) {
       alignItems: "center",
     }, // QUESTION label + trash icon
 
-    // NEW: HOME deck list
+    // HOME deck list
 
     deckRow: {
       flexDirection: "row",
@@ -240,5 +240,17 @@ export function getStyles(isDark) {
     deckRowActive: { borderColor: colors.accent }, // selected deck
     deckRowTitle: { color: colors.text, fontWeight: "700", fontSize: 15 }, // deck name
     deckRowCount: { color: colors.muted, fontSize: 13 }, // "5 cards"
+
+    // PROGRESS scores
+
+    errorText: { color: "#EF4444", marginBottom: 8 }, // red message when the score is not valid
+    inputRow: { flexDirection: "row", gap: 12 }, // two fields side by side
+    inputHalf: { flex: 1 }, // each field takes half the width
+    scoreFooter: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginTop: 12,
+    }, // date on the left, trash icon on the right
   });
 }
