@@ -209,6 +209,21 @@ export function getStyles(isDark) {
     aboutBody: { color: colors.muted, fontSize: 13, lineHeight: 20 }, // paragraph inside the About box
     closeButton: { marginTop: 20 }, // extra space above the Close button
 
+    // QUIZ
+
+    buttonRow: { flexDirection: "row", gap: 12, marginTop: 8 }, // two buttons side by side
+    buttonFlex: { flex: 1, marginTop: 0 }, // each button takes half the row
+    buttonGood: { backgroundColor: "#22C55E" }, // green "Got it"
+    buttonBad: { backgroundColor: "#EF4444" }, // red "Missed it"
+    buttonGray: { backgroundColor: colors.muted }, // neutral button
+    resultScore: {
+      fontSize: 56,
+      fontWeight: "800",
+      color: colors.accent,
+      textAlign: "center",
+    }, // big % on the result screen
+    centerText: { textAlign: "center" }, // centered text
+
     // NEW: CREATE SCREEN (real inputs, deck picker, delete)
 
     buttonSpaced: { marginTop: 0, marginBottom: 24 }, // Create Deck button spacing
@@ -224,7 +239,7 @@ export function getStyles(isDark) {
       alignItems: "center",
     }, // QUESTION label + trash icon
 
-    // HOME deck list
+    // NEW: HOME deck list
 
     deckRow: {
       flexDirection: "row",
@@ -240,17 +255,5 @@ export function getStyles(isDark) {
     deckRowActive: { borderColor: colors.accent }, // selected deck
     deckRowTitle: { color: colors.text, fontWeight: "700", fontSize: 15 }, // deck name
     deckRowCount: { color: colors.muted, fontSize: 13 }, // "5 cards"
-
-    // PROGRESS scores
-
-    errorText: { color: "#EF4444", marginBottom: 8 }, // red message when the score is not valid
-    inputRow: { flexDirection: "row", gap: 12 }, // two fields side by side
-    inputHalf: { flex: 1 }, // each field takes half the width
-    scoreFooter: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginTop: 12,
-    }, // date on the left, trash icon on the right
   });
 }
