@@ -4,10 +4,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { Text, TouchableOpacity, View } from "react-native";
 import { getColors, getStyles } from "../../styles";
 
-// The three buttons in the bottom tab bar.
+// The buttons in the bottom tab bar.
 export const TABS = [
   { key: "home", label: "Home", icon: "home" },
   { key: "create", label: "Create", icon: "add-circle" },
+  { key: "quiz", label: "Quiz", icon: "school" },
   { key: "progress", label: "Progress", icon: "stats-chart" },
 ];
 

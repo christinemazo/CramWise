@@ -9,10 +9,11 @@ import { DeckProvider } from "./src/contexts/Deckcontext";
 import CreateScreen from "./src/screens/Createscreen";
 import HomeScreen from "./src/screens/Homescreen";
 import ProgressScreen from "./src/screens/Progressscreen";
+import QuizScreen from "./src/screens/Quizscreen";
 import { getColors, getStyles } from "./styles";
 
 export default function App() {
-  // Which tab is open ("home", "create" or "progress")
+  // Which tab is open ("home", "create", "quiz" or "progress")
   const [activeTab, setActiveTab] = useState("home");
 
   // true = dark mode, false = light mode
@@ -27,6 +28,7 @@ export default function App() {
   // Picks the screen that matches the open tab
   const renderScreen = () => {
     if (activeTab === "create") return <CreateScreen isDark={isDark} />;
+    if (activeTab === "quiz") return <QuizScreen isDark={isDark} />;
     if (activeTab === "progress") return <ProgressScreen isDark={isDark} />;
     return (
       <HomeScreen
@@ -38,23 +40,20 @@ export default function App() {
   };
 
   return (
-    // SafeAreaProvider must be the outermost wrapper so SafeAreaView works
+    // SafeAreaProvider is required for SafeAreaView (needed on web)
     <SafeAreaProvider>
       {/* DeckProvider shares the saved decks with every screen */}
       <DeckProvider>
         {/* SafeAreaView keeps content away from the notch and home bar */}
         <SafeAreaView style={styles.app} edges={["top", "bottom"]}>
-          {/* Active screen */}
           <View style={styles.screen}>{renderScreen()}</View>
 
-          {/* Bottom tab bar */}
           <TabBar active={activeTab} onChange={setActiveTab} isDark={isDark} />
 
           {/* Settings pop-up */}
           <Modal visible={showSettings} transparent animationType="slide">
             <View style={styles.modalBackdrop}>
               <View style={styles.modalCard}>
-                {/* Title and close icon */}
                 <View style={styles.modalHeader}>
                   <Text style={styles.modalTitle}>Settings</Text>
                   <TouchableOpacity onPress={() => setShowSettings(false)}>
@@ -62,13 +61,11 @@ export default function App() {
                   </TouchableOpacity>
                 </View>
 
-                {/* Dark mode switch */}
                 <View style={styles.settingRow}>
                   <Text style={styles.settingLabel}>Dark Mode</Text>
                   <Switch value={isDark} onValueChange={setIsDark} />
                 </View>
 
-                {/* About box */}
                 <View style={styles.aboutBox}>
                   <Text style={styles.aboutTitle}>About CramWise</Text>
                   <Text style={styles.aboutBody}>
@@ -78,7 +75,6 @@ export default function App() {
                   </Text>
                 </View>
 
-                {/* Close button */}
                 <TouchableOpacity
                   style={[styles.button, styles.closeButton]}
                   onPress={() => setShowSettings(false)}
