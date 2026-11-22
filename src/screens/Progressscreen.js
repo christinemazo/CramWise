@@ -1,6 +1,7 @@
-// PROGRESS SCREEN: average score + clickable quiz cards that show the attempt
+// PROGRESS SCREEN: average score + clickable quiz cards + instant icon delete on detail view
 
 import { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import {
   ScrollView,
   StyleSheet,
@@ -13,7 +14,7 @@ import { useDecks } from "../contexts/Deckcontext";
 
 export default function ProgressScreen({ isDark }) {
   const baseStyles = getStyles(isDark);
-  const { scores, average } = useDecks();
+  const { scores, average, deleteScore } = useDecks();
 
   // Stores the quiz attempt that was tapped
   const [selectedAttempt, setSelectedAttempt] = useState(null);
@@ -23,6 +24,14 @@ export default function ProgressScreen({ isDark }) {
   const titleColor = isDark ? "#F8FAFC" : "#0F172A";
   const metaColor = isDark ? "#94A3B8" : "#64748B";
   const trackBg = isDark ? "#24344D" : "#E2E8F0";
+
+  const handleDeleteAttempt = () => {
+    if (!selectedAttempt) return;
+    if (typeof deleteScore === "function") {
+      deleteScore(selectedAttempt.id);
+    }
+    setSelectedAttempt(null);
+  };
 
   // When a quiz card is tapped, show that attempt's details and answers
   if (selectedAttempt) {
@@ -38,7 +47,15 @@ export default function ProgressScreen({ isDark }) {
           >
             <Text style={styles.backText}>← Back to Progress</Text>
           </TouchableOpacity>
-          <Text style={styles.scoreText}>{selectedAttempt.score}%</Text>
+
+          <TouchableOpacity
+            onPress={handleDeleteAttempt}
+            activeOpacity={0.7}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+            accessibilityLabel="Delete quiz attempt"
+          >
+            <Ionicons name="trash-outline" size={20} color="#EF4444" />
+          </TouchableOpacity>
         </View>
 
         <Text style={baseStyles.title}>{selectedAttempt.title}</Text>
@@ -120,9 +137,9 @@ export default function ProgressScreen({ isDark }) {
         </View>
       )}
 
-      {scores.map((attempt) => (
+      {scores.map((attempt, index) => (
         <TouchableOpacity
-          key={attempt.id}
+          key={attempt.id || `attempt-${index}`}
           style={[
             styles.card,
             { backgroundColor: cardBg, borderColor: cardBorder },

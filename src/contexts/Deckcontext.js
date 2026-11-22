@@ -75,6 +75,10 @@ export function DeckProvider({ children }) {
     setScores((current) => [entry, ...current]);
   };
 
+  const deleteScore = (scoreId) => {
+    setScores((current) => current.filter((entry) => entry.id !== scoreId));
+  };
+
   const average =
     scores.length === 0
       ? 0
@@ -91,6 +95,7 @@ export function DeckProvider({ children }) {
         addCard,
         deleteCard,
         addScore,
+        deleteScore,
       }}
     >
       {children}
