@@ -9,49 +9,57 @@ export default function QuizScreen({ isDark }) {
   const styles = getStyles(isDark);
   const { decks, scores, addScore } = useDecks();
 
-  const [deck, setDeck] = useState(null); // deck being quizzed (null = picking)
-  const [cards, setCards] = useState([]); // shuffled cards for this round
-  const [index, setIndex] = useState(0); // which card we are on
+  const [deck, setDeck] = useState(null);
+  const [cards, setCards] = useState([]);
+  const [index, setIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
-  const [correct, setCorrect] = useState(0); // how many "Got it"
-  const [result, setResult] = useState(null); // { percent, isBest } when done
+  const [correct, setCorrect] = useState(0);
+  const [history, setHistory] = useState([]);
+  const [result, setResult] = useState(null);
 
-  // Highest saved score for a deck (null if never taken).
   const getBest = (deckId) => {
     const list = scores.filter((s) => s.deckId === deckId);
     return list.length === 0 ? null : Math.max(...list.map((s) => s.score));
   };
 
-  // Start (or restart) a quiz with a deck.
   const start = (chosen) => {
     setDeck(chosen);
     setCards([...chosen.cards].sort(() => Math.random() - 0.5));
     setIndex(0);
     setCorrect(0);
+    setHistory([]);
     setShowAnswer(false);
     setResult(null);
   };
 
-  // Called when the user taps "Got it" or "Missed it".
   const answer = (gotIt) => {
+    const currentCard = cards[index];
     const total = correct + (gotIt ? 1 : 0);
-    setCorrect(total);
+    const updatedHistory = [
+      ...history,
+      {
+        id: currentCard.id,
+        front: currentCard.front,
+        back: currentCard.back,
+        gotIt,
+      },
+    ];
 
-    // More cards left: go to the next one
+    setCorrect(total);
+    setHistory(updatedHistory);
+
     if (index + 1 < cards.length) {
       setIndex(index + 1);
       setShowAnswer(false);
       return;
     }
 
-    // Last card: work out the score, check the high score, and save it
     const percent = Math.round((total / cards.length) * 100);
     const best = getBest(deck.id);
     setResult({ percent, isBest: best === null || percent > best });
-    addScore(deck.id, deck.title, percent);
+    addScore(deck.id, deck.title, percent, updatedHistory);
   };
 
-  // ---------- RESULT ----------
   if (deck && result) {
     return (
       <ScrollView contentContainerStyle={styles.content}>
@@ -88,7 +96,6 @@ export default function QuizScreen({ isDark }) {
     );
   }
 
-  // ---------- QUIZ ----------
   if (deck) {
     const card = cards[index];
     const progress = Math.round((index / cards.length) * 100);
@@ -106,7 +113,6 @@ export default function QuizScreen({ isDark }) {
           <View style={[styles.barFill, { width: `${progress}%` }]} />
         </View>
 
-        {/* Tap the card to reveal the answer */}
         <TouchableOpacity
           style={[styles.flashCard, showAnswer && styles.flashCardBack]}
           activeOpacity={0.9}
@@ -123,7 +129,6 @@ export default function QuizScreen({ isDark }) {
           </Text>
         </TouchableOpacity>
 
-        {/* Grade buttons appear after the answer is shown */}
         {showAnswer && (
           <View style={styles.buttonRow}>
             <TouchableOpacity
@@ -151,7 +156,6 @@ export default function QuizScreen({ isDark }) {
     );
   }
 
-  // ---------- PICK A DECK ----------
   const playable = decks.filter((d) => d.cards.length > 0);
 
   return (

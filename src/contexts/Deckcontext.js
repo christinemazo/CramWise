@@ -7,16 +7,10 @@ const STORAGE_KEY = "cramwise_data";
 const DeckContext = createContext(null);
 
 export function DeckProvider({ children }) {
-  // decks look like: { id, title, cards: [{ id, front, back }] }
   const [decks, setDecks] = useState([]);
-
-  // scores look like: { id, deckId, title, date, score }
   const [scores, setScores] = useState([]);
-
-  // true after saved data is read (stops an empty list from overwriting it)
   const [loaded, setLoaded] = useState(false);
 
-  // LOAD saved data once when the app starts
   useEffect(() => {
     async function load() {
       try {
@@ -34,14 +28,12 @@ export function DeckProvider({ children }) {
     load();
   }, []);
 
-  // SAVE every time decks or scores change
   useEffect(() => {
     if (loaded) {
       AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ decks, scores }));
     }
   }, [decks, scores, loaded]);
 
-  // Creates a deck and returns its id.
   const addDeck = (title) => {
     const id = Date.now().toString();
     setDecks((current) => [...current, { id, title, cards: [] }]);
@@ -71,19 +63,18 @@ export function DeckProvider({ children }) {
     );
   };
 
-  // Saves a quiz result (newest first).
-  const addScore = (deckId, title, score) => {
+  const addScore = (deckId, title, score, items = []) => {
     const entry = {
       id: Date.now().toString(),
       deckId,
       title,
       date: new Date().toLocaleDateString(),
       score,
+      items,
     };
     setScores((current) => [entry, ...current]);
   };
 
-  // Average of all saved scores (0 if there are none).
   const average =
     scores.length === 0
       ? 0
@@ -107,7 +98,6 @@ export function DeckProvider({ children }) {
   );
 }
 
-// Screens use:  const { decks } = useDecks();
 export function useDecks() {
   return useContext(DeckContext);
 }
