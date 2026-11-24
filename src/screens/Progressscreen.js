@@ -1,4 +1,4 @@
-// PROGRESS SCREEN: average score + Recent Activity count + clickable quiz cards + instant icon delete on detail view
+// PROGRESS SCREEN: average score + Delete All in Recent Activity + clickable quiz cards + instant icon delete on detail view
 
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
@@ -29,6 +29,18 @@ export default function ProgressScreen({ isDark }) {
     if (!selectedAttempt) return;
     if (typeof deleteScore === "function") {
       deleteScore(selectedAttempt.id);
+    }
+    setSelectedAttempt(null);
+  };
+
+  const handleDeleteAll = () => {
+    if (!Array.isArray(scores) || scores.length === 0) return;
+    if (typeof deleteScore === "function") {
+      scores.forEach((attempt, idx) => {
+        if (attempt && attempt.id != null) {
+          deleteScore(attempt.id);
+        }
+      });
     }
     setSelectedAttempt(null);
   };
@@ -141,9 +153,14 @@ export default function ProgressScreen({ isDark }) {
             <Text style={[styles.sectionHeading, { color: titleColor }]}>
               Recent Activity
             </Text>
-            <Text style={[styles.recentCount, { color: metaColor }]}>
-              {scores.length} {scores.length === 1 ? "attempt" : "attempts"}
-            </Text>
+            <TouchableOpacity
+              onPress={handleDeleteAll}
+              activeOpacity={0.75}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              accessibilityLabel="Delete all quiz attempts"
+            >
+              <Text style={styles.deleteAllText}>Delete All</Text>
+            </TouchableOpacity>
           </View>
 
           {scores.map((attempt, index) => (
@@ -193,9 +210,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "800",
   },
-  recentCount: {
-    fontSize: 12,
-    fontWeight: "600",
+  deleteAllText: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#EF4444",
   },
   card: {
     borderRadius: 16,
