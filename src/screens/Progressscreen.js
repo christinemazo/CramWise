@@ -1,4 +1,4 @@
-// PROGRESS SCREEN: average score + Recent Activity section + clickable quiz cards + instant icon delete on detail view
+// PROGRESS SCREEN: average score + Recent Activity count + clickable quiz cards + instant icon delete on detail view
 
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
@@ -137,9 +137,14 @@ export default function ProgressScreen({ isDark }) {
         </View>
       ) : (
         <View style={styles.recentSection}>
-          <Text style={[styles.sectionHeading, { color: titleColor }]}>
-            Recent Activity
-          </Text>
+          <View style={styles.recentHeaderRow}>
+            <Text style={[styles.sectionHeading, { color: titleColor }]}>
+              Recent Activity
+            </Text>
+            <Text style={[styles.recentCount, { color: metaColor }]}>
+              {scores.length} {scores.length === 1 ? "attempt" : "attempts"}
+            </Text>
+          </View>
 
           {scores.map((attempt, index) => (
             <TouchableOpacity
@@ -178,10 +183,19 @@ const styles = StyleSheet.create({
   recentSection: {
     marginTop: 4,
   },
+  recentHeaderRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
   sectionHeading: {
     fontSize: 18,
     fontWeight: "800",
-    marginBottom: 10,
+  },
+  recentCount: {
+    fontSize: 12,
+    fontWeight: "600",
   },
   card: {
     borderRadius: 16,
