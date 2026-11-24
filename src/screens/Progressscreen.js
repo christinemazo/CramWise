@@ -1,4 +1,4 @@
-// PROGRESS SCREEN: average score + Delete All in Recent Activity + clickable quiz cards + instant icon delete on detail view
+// PROGRESS SCREEN: average score + Recent Activity quiz count + clickable quiz cards + instant icon delete on detail view
 
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
@@ -16,8 +16,8 @@ export default function ProgressScreen({ isDark }) {
   const baseStyles = getStyles(isDark);
   const { scores, average, deleteScore } = useDecks();
 
-  // Stores the quiz attempt that was tapped
-  const [selectedAttempt, setSelectedAttempt] = useState(null);
+  // Stores the quiz card that was tapped
+  const [selectedQuiz, setSelectedQuiz] = useState(null);
 
   const cardBg = isDark ? "#132238" : "#FFFFFF";
   const cardBorder = isDark ? "#233652" : "#E2E8F0";
@@ -25,28 +25,16 @@ export default function ProgressScreen({ isDark }) {
   const metaColor = isDark ? "#94A3B8" : "#64748B";
   const trackBg = isDark ? "#24344D" : "#E2E8F0";
 
-  const handleDeleteAttempt = () => {
-    if (!selectedAttempt) return;
+  const handleDeleteQuiz = () => {
+    if (!selectedQuiz) return;
     if (typeof deleteScore === "function") {
-      deleteScore(selectedAttempt.id);
+      deleteScore(selectedQuiz.id);
     }
-    setSelectedAttempt(null);
+    setSelectedQuiz(null);
   };
 
-  const handleDeleteAll = () => {
-    if (!Array.isArray(scores) || scores.length === 0) return;
-    if (typeof deleteScore === "function") {
-      scores.forEach((attempt, idx) => {
-        if (attempt && attempt.id != null) {
-          deleteScore(attempt.id);
-        }
-      });
-    }
-    setSelectedAttempt(null);
-  };
-
-  // When a quiz card is tapped, show that attempt's details and answers
-  if (selectedAttempt) {
+  // When a quiz card is tapped, show that quiz's details and answers
+  if (selectedQuiz) {
     return (
       <ScrollView
         contentContainerStyle={baseStyles.content}
@@ -54,29 +42,29 @@ export default function ProgressScreen({ isDark }) {
       >
         <View style={[styles.rowTop, { marginBottom: 12 }]}>
           <TouchableOpacity
-            onPress={() => setSelectedAttempt(null)}
+            onPress={() => setSelectedQuiz(null)}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
             <Text style={styles.backText}>← Back to Progress</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={handleDeleteAttempt}
+            onPress={handleDeleteQuiz}
             activeOpacity={0.7}
             hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-            accessibilityLabel="Delete quiz attempt"
+            accessibilityLabel="Delete quiz"
           >
             <Ionicons name="trash-outline" size={20} color="#EF4444" />
           </TouchableOpacity>
         </View>
 
-        <Text style={baseStyles.title}>{selectedAttempt.title}</Text>
+        <Text style={baseStyles.title}>{selectedQuiz.title}</Text>
         <Text style={baseStyles.subtitle}>
-          Attempt on {selectedAttempt.date} · Score: {selectedAttempt.score}%
+          Completed on {selectedQuiz.date} · Score: {selectedQuiz.score}%
         </Text>
 
-        {selectedAttempt.items && selectedAttempt.items.length > 0 ? (
-          selectedAttempt.items.map((item, idx) => (
+        {selectedQuiz.items && selectedQuiz.items.length > 0 ? (
+          selectedQuiz.items.map((item, idx) => (
             <View
               key={`${item.id || idx}-${idx}`}
               style={[
@@ -113,10 +101,10 @@ export default function ProgressScreen({ isDark }) {
             ]}
           >
             <Text style={[styles.cardTitle, { color: titleColor }]}>
-              Quiz attempt recorded
+              Quiz recorded
             </Text>
             <Text style={[styles.cardMeta, { color: metaColor }]}>
-              No card-by-card breakdown was saved for this earlier attempt. Take a
+              No card-by-card breakdown was saved for this earlier quiz. Take a
               new quiz to see each question and answer here.
             </Text>
           </View>
@@ -153,40 +141,35 @@ export default function ProgressScreen({ isDark }) {
             <Text style={[styles.sectionHeading, { color: titleColor }]}>
               Recent Activity
             </Text>
-            <TouchableOpacity
-              onPress={handleDeleteAll}
-              activeOpacity={0.75}
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-              accessibilityLabel="Delete all quiz attempts"
-            >
-              <Text style={styles.deleteAllText}>Delete All</Text>
-            </TouchableOpacity>
+            <Text style={[styles.recentCount, { color: metaColor }]}>
+              {scores.length} {scores.length === 1 ? "quiz" : "quizzes"}
+            </Text>
           </View>
 
-          {scores.map((attempt, index) => (
+          {scores.map((quiz, index) => (
             <TouchableOpacity
-              key={attempt.id || `attempt-${index}`}
+              key={quiz.id || `quiz-${index}`}
               style={[
                 styles.card,
                 { backgroundColor: cardBg, borderColor: cardBorder },
               ]}
               activeOpacity={0.85}
-              onPress={() => setSelectedAttempt(attempt)}
+              onPress={() => setSelectedQuiz(quiz)}
             >
               <View style={styles.rowTop}>
                 <View style={{ flex: 1, paddingRight: 12 }}>
                   <Text style={[styles.cardTitle, { color: titleColor }]}>
-                    {attempt.title}
+                    {quiz.title}
                   </Text>
                   <Text style={[styles.cardMeta, { color: metaColor }]}>
-                    {attempt.date} · Tap to view quiz
+                    {quiz.date} · Tap to view quiz
                   </Text>
                 </View>
-                <Text style={styles.scoreText}>{attempt.score}%</Text>
+                <Text style={styles.scoreText}>{quiz.score}%</Text>
               </View>
 
               <View style={[styles.track, { backgroundColor: trackBg }]}>
-                <View style={[styles.fill, { width: `${attempt.score}%` }]} />
+                <View style={[styles.fill, { width: `${quiz.score}%` }]} />
               </View>
             </TouchableOpacity>
           ))}
@@ -210,10 +193,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "800",
   },
-  deleteAllText: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: "#EF4444",
+  recentCount: {
+    fontSize: 12,
+    fontWeight: "600",
   },
   card: {
     borderRadius: 16,
