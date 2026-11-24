@@ -1,7 +1,7 @@
-// PROGRESS SCREEN: average score + clickable quiz cards + instant icon delete on detail view
+// PROGRESS SCREEN: average score + Recent Activity section + clickable quiz cards + instant icon delete on detail view
 
-import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -121,7 +121,7 @@ export default function ProgressScreen({ isDark }) {
       <Text style={baseStyles.title}>Progress</Text>
       <Text style={baseStyles.subtitle}>Your average is {average}%</Text>
 
-      {scores.length === 0 && (
+      {scores.length === 0 ? (
         <View
           style={[
             styles.card,
@@ -135,40 +135,54 @@ export default function ProgressScreen({ isDark }) {
             Finish a quiz in the Quiz tab to see your results here.
           </Text>
         </View>
+      ) : (
+        <View style={styles.recentSection}>
+          <Text style={[styles.sectionHeading, { color: titleColor }]}>
+            Recent Activity
+          </Text>
+
+          {scores.map((attempt, index) => (
+            <TouchableOpacity
+              key={attempt.id || `attempt-${index}`}
+              style={[
+                styles.card,
+                { backgroundColor: cardBg, borderColor: cardBorder },
+              ]}
+              activeOpacity={0.85}
+              onPress={() => setSelectedAttempt(attempt)}
+            >
+              <View style={styles.rowTop}>
+                <View style={{ flex: 1, paddingRight: 12 }}>
+                  <Text style={[styles.cardTitle, { color: titleColor }]}>
+                    {attempt.title}
+                  </Text>
+                  <Text style={[styles.cardMeta, { color: metaColor }]}>
+                    {attempt.date} · Tap to view quiz
+                  </Text>
+                </View>
+                <Text style={styles.scoreText}>{attempt.score}%</Text>
+              </View>
+
+              <View style={[styles.track, { backgroundColor: trackBg }]}>
+                <View style={[styles.fill, { width: `${attempt.score}%` }]} />
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
       )}
-
-      {scores.map((attempt, index) => (
-        <TouchableOpacity
-          key={attempt.id || `attempt-${index}`}
-          style={[
-            styles.card,
-            { backgroundColor: cardBg, borderColor: cardBorder },
-          ]}
-          activeOpacity={0.85}
-          onPress={() => setSelectedAttempt(attempt)}
-        >
-          <View style={styles.rowTop}>
-            <View style={{ flex: 1, paddingRight: 12 }}>
-              <Text style={[styles.cardTitle, { color: titleColor }]}>
-                {attempt.title}
-              </Text>
-              <Text style={[styles.cardMeta, { color: metaColor }]}>
-                {attempt.date} · Tap to view quiz
-              </Text>
-            </View>
-            <Text style={styles.scoreText}>{attempt.score}%</Text>
-          </View>
-
-          <View style={[styles.track, { backgroundColor: trackBg }]}>
-            <View style={[styles.fill, { width: `${attempt.score}%` }]} />
-          </View>
-        </TouchableOpacity>
-      ))}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  recentSection: {
+    marginTop: 4,
+  },
+  sectionHeading: {
+    fontSize: 18,
+    fontWeight: "800",
+    marginBottom: 10,
+  },
   card: {
     borderRadius: 16,
     padding: 18,
