@@ -1,4 +1,4 @@
-// PROGRESS SCREEN: average score + Recent Activity quiz count + clickable quiz cards + instant icon delete on detail view
+// PROGRESS SCREEN: dynamic average subtitle + Recent Activity quiz count + clickable quiz cards + instant icon delete on detail view
 
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
@@ -119,7 +119,11 @@ export default function ProgressScreen({ isDark }) {
       showsVerticalScrollIndicator={false}
     >
       <Text style={baseStyles.title}>Progress</Text>
-      <Text style={baseStyles.subtitle}>Your average is {average}%</Text>
+      <Text style={baseStyles.subtitle}>
+        {scores.length === 0
+          ? "Complete a quiz to start tracking your average"
+          : `Average quiz score: ${average}%`}
+      </Text>
 
       {scores.length === 0 ? (
         <View
