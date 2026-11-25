@@ -162,9 +162,6 @@ export default function ProgressScreen({ isDark }) {
             <Text style={[styles.sectionHeading, { color: titleColor }]}>
               Latest Scores
             </Text>
-            <Text style={[styles.recentCount, { color: metaColor }]}>
-              {scores.length} {scores.length === 1 ? "quiz" : "quizzes"}
-            </Text>
           </View>
 
           {scores.map((quiz, index) => (
@@ -183,7 +180,7 @@ export default function ProgressScreen({ isDark }) {
                     {quiz.title}
                   </Text>
                   <Text style={[styles.cardMeta, { color: metaColor }]}>
-                    {quiz.date} · Tap to view quiz
+                    {quiz.date}
                   </Text>
                 </View>
                 <Text style={styles.scoreText}>{quiz.score}%</Text>
@@ -241,10 +238,6 @@ const styles = StyleSheet.create({
   sectionHeading: {
     fontSize: 18,
     fontWeight: "800",
-  },
-  recentCount: {
-    fontSize: 12,
-    fontWeight: "600",
   },
   card: {
     borderRadius: 16,
