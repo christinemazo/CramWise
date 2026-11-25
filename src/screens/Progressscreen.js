@@ -1,4 +1,4 @@
-// PROGRESS SCREEN: spaced formatted quiz date below title + year-aware dates + Average score hero card + Latest Scores compact cards + detail view
+// PROGRESS SCREEN: compact detail header (tight back arrow + delete icon + compact subtitle) + year-aware dates + Average score hero card + Latest Scores cards
 
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
@@ -95,26 +95,29 @@ export default function ProgressScreen({ isDark }) {
         contentContainerStyle={baseStyles.content}
         showsVerticalScrollIndicator={false}
       >
-        <View style={[styles.rowTop, { marginBottom: 12 }]}>
+        <View style={styles.detailHeader}>
           <TouchableOpacity
             onPress={() => setSelectedQuiz(null)}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            style={styles.backBtn}
           >
-            <Text style={styles.backText}>← Back to Progress</Text>
+            <Ionicons name="arrow-back" size={18} color="#1D9BF0" />
+            <Text style={styles.backText}>Back to Progress</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={handleDeleteQuiz}
             activeOpacity={0.7}
-            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             accessibilityLabel="Delete quiz"
+            style={styles.deleteBtn}
           >
             <Ionicons name="trash-outline" size={22} color="#EF4444" />
           </TouchableOpacity>
         </View>
 
         <Text style={baseStyles.title}>{selectedQuiz.title}</Text>
-        <Text style={baseStyles.subtitle}>
+        <Text style={[styles.detailSubtitle, { color: metaColor }]}>
           Completed {formattedSelectedDate} · Score: {selectedQuiz.score}%
         </Text>
 
@@ -300,7 +303,7 @@ const styles = StyleSheet.create({
   },
   scoreCard: {
     borderRadius: 14,
-    paddingVertical: 15,
+    paddingVertical: 14,
     paddingHorizontal: 16,
     marginBottom: 10,
     borderWidth: 1,
@@ -310,10 +313,29 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  detailHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  backBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 2,
+  },
+  deleteBtn: {
+    padding: 2,
+  },
   backText: {
     fontSize: 15,
     fontWeight: "700",
     color: "#1D9BF0",
+  },
+  detailSubtitle: {
+    fontSize: 13,
+    marginTop: 5,
+    marginBottom: 12,
   },
   cardTitle: {
     fontSize: 16,
@@ -321,7 +343,7 @@ const styles = StyleSheet.create({
   },
   cardMeta: {
     fontSize: 12,
-    marginTop: 6,
+    marginTop: 5,
   },
   scoreText: {
     fontSize: 18,
