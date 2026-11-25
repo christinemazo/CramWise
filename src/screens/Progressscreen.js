@@ -1,4 +1,4 @@
-// PROGRESS SCREEN: dynamic average subtitle + Recent Activity quiz count + clickable quiz cards + instant icon delete on detail view
+// PROGRESS SCREEN: taller & bolder Average score hero card + "Track your quiz score" subtitle + Recent Activity quiz count + detail view
 
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
@@ -24,6 +24,8 @@ export default function ProgressScreen({ isDark }) {
   const titleColor = isDark ? "#F8FAFC" : "#0F172A";
   const metaColor = isDark ? "#94A3B8" : "#64748B";
   const trackBg = isDark ? "#24344D" : "#E2E8F0";
+
+  const clampedAverage = Math.max(0, Math.min(100, Number(average) || 0));
 
   const handleDeleteQuiz = () => {
     if (!selectedQuiz) return;
@@ -119,11 +121,26 @@ export default function ProgressScreen({ isDark }) {
       showsVerticalScrollIndicator={false}
     >
       <Text style={baseStyles.title}>Progress</Text>
-      <Text style={baseStyles.subtitle}>
-        {scores.length === 0
-          ? "Complete a quiz to start tracking your average"
-          : `Average quiz score: ${average}%`}
-      </Text>
+      <Text style={baseStyles.subtitle}>Track your quiz score</Text>
+
+      <View
+        style={[
+          styles.heroCard,
+          { backgroundColor: cardBg, borderColor: cardBorder },
+        ]}
+      >
+        <View style={styles.progressTop}>
+          <Text style={[styles.heroTitle, { color: titleColor }]}>
+            Average score
+          </Text>
+          <Text style={styles.progressPercent}>{clampedAverage}%</Text>
+        </View>
+        <View style={[styles.barBackground, { backgroundColor: trackBg }]}>
+          <View
+            style={[styles.barFill, { width: `${clampedAverage}%` }]}
+          />
+        </View>
+      </View>
 
       {scores.length === 0 ? (
         <View
@@ -184,6 +201,38 @@ export default function ProgressScreen({ isDark }) {
 }
 
 const styles = StyleSheet.create({
+  heroCard: {
+    borderRadius: 18,
+    paddingVertical: 24,
+    paddingHorizontal: 20,
+    marginBottom: 18,
+    borderWidth: 1.5,
+  },
+  progressTop: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  heroTitle: {
+    fontSize: 18,
+    fontWeight: "800",
+  },
+  progressPercent: {
+    fontSize: 24,
+    fontWeight: "900",
+    color: "#1D9BF0",
+  },
+  barBackground: {
+    height: 11,
+    borderRadius: 999,
+    overflow: "hidden",
+    marginTop: 16,
+  },
+  barFill: {
+    height: "100%",
+    borderRadius: 999,
+    backgroundColor: "#1D9BF0",
+  },
   recentSection: {
     marginTop: 4,
   },
