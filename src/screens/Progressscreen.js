@@ -1,4 +1,4 @@
-// PROGRESS SCREEN: year-aware relative/MonthDay dates + "Track your quiz score" subtitle + Average score hero card + Latest Scores compact cards + detail view
+// PROGRESS SCREEN: spaced formatted quiz date below title + year-aware dates + Average score hero card + Latest Scores compact cards + detail view
 
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
   },
   scoreCard: {
     borderRadius: 14,
-    paddingVertical: 13,
+    paddingVertical: 15,
     paddingHorizontal: 16,
     marginBottom: 10,
     borderWidth: 1,
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
   },
   cardMeta: {
     fontSize: 12,
-    marginTop: 3,
+    marginTop: 6,
   },
   scoreText: {
     fontSize: 18,
