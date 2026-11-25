@@ -1,4 +1,4 @@
-// PROGRESS SCREEN: "Track your quiz score" subtitle + Average score hero card + Latest Scores compact cards + detail view
+// PROGRESS SCREEN: year-aware relative/MonthDay dates + "Track your quiz score" subtitle + Average score hero card + Latest Scores compact cards + detail view
 
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
@@ -11,6 +11,57 @@ import {
 } from "react-native";
 import { getStyles } from "../../styles";
 import { useDecks } from "../contexts/Deckcontext";
+
+function parseQuizDate(rawDate) {
+  if (!rawDate) return null;
+  if (rawDate instanceof Date) {
+    return Number.isNaN(rawDate.getTime()) ? null : rawDate;
+  }
+
+  const str = String(rawDate).trim();
+  if (!str) return null;
+
+  // Handle YYYY-MM-DD in local time so midnight doesn't shift by timezone
+  const isoMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(str);
+  if (isoMatch) {
+    const year = Number(isoMatch[1]);
+    const month = Number(isoMatch[2]) - 1;
+    const day = Number(isoMatch[3]);
+    const parsed = new Date(year, month, day);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  }
+
+  const parsed = new Date(str);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function formatQuizDate(rawDate) {
+  const dateObj = parseQuizDate(rawDate);
+  if (!dateObj) return rawDate ? String(rawDate) : "";
+
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const targetStart = new Date(
+    dateObj.getFullYear(),
+    dateObj.getMonth(),
+    dateObj.getDate()
+  );
+
+  const dayDiff = Math.round(
+    (todayStart.getTime() - targetStart.getTime()) / (1000 * 60 * 60 * 24)
+  );
+
+  if (dayDiff === 0) return "Today";
+  if (dayDiff === 1) return "Yesterday";
+
+  const includeYear = targetStart.getFullYear() !== todayStart.getFullYear();
+
+  return targetStart.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    ...(includeYear ? { year: "numeric" } : {}),
+  });
+}
 
 export default function ProgressScreen({ isDark }) {
   const baseStyles = getStyles(isDark);
@@ -37,6 +88,8 @@ export default function ProgressScreen({ isDark }) {
 
   // When a quiz card is tapped, show that quiz's details and answers
   if (selectedQuiz) {
+    const formattedSelectedDate = formatQuizDate(selectedQuiz.date);
+
     return (
       <ScrollView
         contentContainerStyle={baseStyles.content}
@@ -62,7 +115,7 @@ export default function ProgressScreen({ isDark }) {
 
         <Text style={baseStyles.title}>{selectedQuiz.title}</Text>
         <Text style={baseStyles.subtitle}>
-          Completed on {selectedQuiz.date} · Score: {selectedQuiz.score}%
+          Completed {formattedSelectedDate} · Score: {selectedQuiz.score}%
         </Text>
 
         {selectedQuiz.items && selectedQuiz.items.length > 0 ? (
@@ -180,7 +233,7 @@ export default function ProgressScreen({ isDark }) {
                     {quiz.title}
                   </Text>
                   <Text style={[styles.cardMeta, { color: metaColor }]}>
-                    {quiz.date}
+                    {formatQuizDate(quiz.date)}
                   </Text>
                 </View>
                 <Text style={styles.scoreText}>{quiz.score}%</Text>
