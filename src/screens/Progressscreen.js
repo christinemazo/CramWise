@@ -1,4 +1,4 @@
-// PROGRESS SCREEN: taller & bolder Average score hero card + "Track your quiz score" subtitle + Recent Activity quiz count + detail view
+// PROGRESS SCREEN: "Track your quiz score" subtitle + Average score hero card + Latest Scores compact cards + detail view
 
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
@@ -160,7 +160,7 @@ export default function ProgressScreen({ isDark }) {
         <View style={styles.recentSection}>
           <View style={styles.recentHeaderRow}>
             <Text style={[styles.sectionHeading, { color: titleColor }]}>
-              Recent Activity
+              Latest Scores
             </Text>
             <Text style={[styles.recentCount, { color: metaColor }]}>
               {scores.length} {scores.length === 1 ? "quiz" : "quizzes"}
@@ -171,7 +171,7 @@ export default function ProgressScreen({ isDark }) {
             <TouchableOpacity
               key={quiz.id || `quiz-${index}`}
               style={[
-                styles.card,
+                styles.scoreCard,
                 { backgroundColor: cardBg, borderColor: cardBorder },
               ]}
               activeOpacity={0.85}
@@ -187,10 +187,6 @@ export default function ProgressScreen({ isDark }) {
                   </Text>
                 </View>
                 <Text style={styles.scoreText}>{quiz.score}%</Text>
-              </View>
-
-              <View style={[styles.track, { backgroundColor: trackBg }]}>
-                <View style={[styles.fill, { width: `${quiz.score}%` }]} />
               </View>
             </TouchableOpacity>
           ))}
@@ -256,6 +252,13 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     borderWidth: 1,
   },
+  scoreCard: {
+    borderRadius: 14,
+    paddingVertical: 13,
+    paddingHorizontal: 16,
+    marginBottom: 10,
+    borderWidth: 1,
+  },
   rowTop: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -278,16 +281,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     color: "#1D9BF0",
-  },
-  track: {
-    height: 7,
-    borderRadius: 999,
-    overflow: "hidden",
-    marginTop: 14,
-  },
-  fill: {
-    height: "100%",
-    borderRadius: 999,
-    backgroundColor: "#1D9BF0",
   },
 });
