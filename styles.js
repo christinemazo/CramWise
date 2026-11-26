@@ -14,6 +14,11 @@ export const darkColors = {
   input: "#0F1629", // background of the fields
   flashBack: "#12395F", // flash card color when showing the answer
   tabInactive: "#94A3B8", // tab icon color when not selected
+  panel: "#132238", // Progress screen cards
+  panelBorder: "#233652", // border of the Progress screen cards
+  track: "#24344D", // empty part of the bar on the Progress hero card
+  danger: "#EF4444", // red (delete, missed)
+  success: "#22C55E", // green (got it)
 };
 
 export const lightColors = {
@@ -27,6 +32,11 @@ export const lightColors = {
   input: "#F1F5F9", // background of the fields
   flashBack: "#DBEAFE", // flash card color when showing the answer
   tabInactive: "#94A3B8", // tab icon color when not selected
+  panel: "#FFFFFF", // Progress screen cards
+  panelBorder: "#E2E8F0", // border of the Progress screen cards
+  track: "#E2E8F0", // empty part of the bar on the Progress hero card
+  danger: "#EF4444", // red (delete, missed)
+  success: "#22C55E", // green (got it)
 };
 
 // Gives back the color set that matches the current mode.
@@ -255,5 +265,82 @@ export function getStyles(isDark) {
     deckRowActive: { borderColor: colors.accent }, // selected deck
     deckRowTitle: { color: colors.text, fontWeight: "700", fontSize: 15 }, // deck name
     deckRowCount: { color: colors.muted, fontSize: 13 }, // "5 cards"
+
+    // PROGRESS SCREEN: average card, score cards and quiz details
+
+    heroCard: {
+      backgroundColor: colors.panel,
+      borderColor: colors.panelBorder,
+      borderRadius: 18,
+      borderWidth: 1.5,
+      paddingVertical: 24,
+      paddingHorizontal: 20,
+      marginBottom: 18,
+    }, // "Average score" card at the top
+    heroTitle: { fontSize: 18, fontWeight: "800", color: colors.text }, // "Average score" label
+    heroPercent: { fontSize: 24, fontWeight: "900", color: colors.accent }, // big average %
+    heroBar: {
+      height: 11,
+      backgroundColor: colors.track,
+      borderRadius: 999,
+      overflow: "hidden",
+      marginTop: 16,
+    }, // empty bar inside the average card
+    heroBarFill: {
+      height: "100%",
+      backgroundColor: colors.accent,
+      borderRadius: 999,
+    }, // filled part (width is set in the screen)
+    recentSection: { marginTop: 4 }, // wraps the "Latest Scores" list
+    recentHeaderRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 10,
+    }, // row that holds the "Latest Scores" heading
+    sectionHeading: { fontSize: 18, fontWeight: "800", color: colors.text }, // "Latest Scores"
+    scoreCard: {
+      backgroundColor: colors.panel,
+      borderColor: colors.panelBorder,
+      borderRadius: 14,
+      borderWidth: 1,
+      paddingVertical: 14,
+      paddingHorizontal: 16,
+      marginBottom: 10,
+    }, // one tappable quiz in the list
+    scoreRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    }, // quiz name on the left, percent on the right
+    scoreValue: { fontSize: 18, fontWeight: "700", color: colors.accent }, // percent in a score card
+    panelCard: {
+      backgroundColor: colors.panel,
+      borderColor: colors.panelBorder,
+      borderRadius: 16,
+      borderWidth: 1,
+      padding: 18,
+      marginBottom: 14,
+    }, // message card and answer cards on Progress
+    panelTitle: { fontSize: 16, fontWeight: "700", color: colors.text }, // title in those cards, and quiz name
+    panelMeta: { fontSize: 12, marginTop: 5, color: colors.muted }, // small gray text (date, answer)
+    panelStatus: { fontSize: 13, fontWeight: "700", marginTop: 8 }, // "Got it" / "Missed it" text
+    statusGood: { color: colors.success }, // green "Got it"
+    statusBad: { color: colors.danger }, // red "Missed it"
+    detailHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 8,
+    }, // back button on the left, delete icon on the right
+    backButton: { flexDirection: "row", alignItems: "center", gap: 2 }, // arrow + "Back to Progress"
+    backText: { fontSize: 15, fontWeight: "700", color: colors.accent }, // "Back to Progress"
+    deleteButton: { padding: 2 }, // tap area around the delete icon
+    detailSubtitle: {
+      fontSize: 13,
+      marginTop: 5,
+      marginBottom: 12,
+      color: colors.muted,
+    }, // "Completed Today · Score: 80%"
   });
 }

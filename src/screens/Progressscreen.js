@@ -1,15 +1,9 @@
-// PROGRESS SCREEN: compact detail header (tight back arrow + delete icon + compact subtitle) + year-aware dates + Average score hero card + Latest Scores cards
+// PROGRESS SCREEN: average score, latest quiz scores, and a detail view for each quiz
 
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { getStyles } from "../../styles";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { getColors, getStyles } from "../../styles";
 import { useDecks } from "../contexts/Deckcontext";
 
 function parseQuizDate(rawDate) {
@@ -44,11 +38,11 @@ function formatQuizDate(rawDate) {
   const targetStart = new Date(
     dateObj.getFullYear(),
     dateObj.getMonth(),
-    dateObj.getDate()
+    dateObj.getDate(),
   );
 
   const dayDiff = Math.round(
-    (todayStart.getTime() - targetStart.getTime()) / (1000 * 60 * 60 * 24)
+    (todayStart.getTime() - targetStart.getTime()) / (1000 * 60 * 60 * 24),
   );
 
   if (dayDiff === 0) return "Today";
@@ -64,17 +58,12 @@ function formatQuizDate(rawDate) {
 }
 
 export default function ProgressScreen({ isDark }) {
-  const baseStyles = getStyles(isDark);
+  const styles = getStyles(isDark);
+  const colors = getColors(isDark);
   const { scores, average, deleteScore } = useDecks();
 
   // Stores the quiz card that was tapped
   const [selectedQuiz, setSelectedQuiz] = useState(null);
-
-  const cardBg = isDark ? "#132238" : "#FFFFFF";
-  const cardBorder = isDark ? "#233652" : "#E2E8F0";
-  const titleColor = isDark ? "#F8FAFC" : "#0F172A";
-  const metaColor = isDark ? "#94A3B8" : "#64748B";
-  const trackBg = isDark ? "#24344D" : "#E2E8F0";
 
   const clampedAverage = Math.max(0, Math.min(100, Number(average) || 0));
 
@@ -92,16 +81,16 @@ export default function ProgressScreen({ isDark }) {
 
     return (
       <ScrollView
-        contentContainerStyle={baseStyles.content}
+        contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.detailHeader}>
           <TouchableOpacity
             onPress={() => setSelectedQuiz(null)}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            style={styles.backBtn}
+            style={styles.backButton}
           >
-            <Ionicons name="arrow-back" size={18} color="#1D9BF0" />
+            <Ionicons name="arrow-back" size={18} color={colors.accent} />
             <Text style={styles.backText}>Back to Progress</Text>
           </TouchableOpacity>
 
@@ -110,41 +99,28 @@ export default function ProgressScreen({ isDark }) {
             activeOpacity={0.7}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             accessibilityLabel="Delete quiz"
-            style={styles.deleteBtn}
+            style={styles.deleteButton}
           >
-            <Ionicons name="trash-outline" size={22} color="#EF4444" />
+            <Ionicons name="trash-outline" size={22} color={colors.danger} />
           </TouchableOpacity>
         </View>
 
-        <Text style={baseStyles.title}>{selectedQuiz.title}</Text>
-        <Text style={[styles.detailSubtitle, { color: metaColor }]}>
+        <Text style={styles.title}>{selectedQuiz.title}</Text>
+        <Text style={styles.detailSubtitle}>
           Completed {formattedSelectedDate} · Score: {selectedQuiz.score}%
         </Text>
 
         {selectedQuiz.items && selectedQuiz.items.length > 0 ? (
           selectedQuiz.items.map((item, idx) => (
-            <View
-              key={`${item.id || idx}-${idx}`}
-              style={[
-                styles.card,
-                { backgroundColor: cardBg, borderColor: cardBorder },
-              ]}
-            >
-              <Text style={[styles.cardTitle, { color: titleColor }]}>
+            <View key={`${item.id || idx}-${idx}`} style={styles.panelCard}>
+              <Text style={styles.panelTitle}>
                 {idx + 1}. {item.front}
               </Text>
-              <Text style={[styles.cardMeta, { color: metaColor }]}>
-                Answer: {item.back}
-              </Text>
+              <Text style={styles.panelMeta}>Answer: {item.back}</Text>
               <Text
                 style={[
-                  styles.cardMeta,
-                  {
-                    marginTop: 8,
-                    fontSize: 13,
-                    fontWeight: "700",
-                    color: item.gotIt ? "#22C55E" : "#EF4444",
-                  },
+                  styles.panelStatus,
+                  item.gotIt ? styles.statusGood : styles.statusBad,
                 ]}
               >
                 {item.gotIt ? "Got it" : "Missed it"}
@@ -152,16 +128,9 @@ export default function ProgressScreen({ isDark }) {
             </View>
           ))
         ) : (
-          <View
-            style={[
-              styles.card,
-              { backgroundColor: cardBg, borderColor: cardBorder },
-            ]}
-          >
-            <Text style={[styles.cardTitle, { color: titleColor }]}>
-              Quiz recorded
-            </Text>
-            <Text style={[styles.cardMeta, { color: metaColor }]}>
+          <View style={styles.panelCard}>
+            <Text style={styles.panelTitle}>Quiz recorded</Text>
+            <Text style={styles.panelMeta}>
               No card-by-card breakdown was saved for this earlier quiz. Take a
               new quiz to see each question and answer here.
             </Text>
@@ -173,73 +142,50 @@ export default function ProgressScreen({ isDark }) {
 
   return (
     <ScrollView
-      contentContainerStyle={baseStyles.content}
+      contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
-      <Text style={baseStyles.title}>Progress</Text>
-      <Text style={baseStyles.subtitle}>Track your quiz score</Text>
+      <Text style={styles.title}>Progress</Text>
+      <Text style={styles.subtitle}>Track your quiz score</Text>
 
-      <View
-        style={[
-          styles.heroCard,
-          { backgroundColor: cardBg, borderColor: cardBorder },
-        ]}
-      >
+      <View style={styles.heroCard}>
         <View style={styles.progressTop}>
-          <Text style={[styles.heroTitle, { color: titleColor }]}>
-            Average score
-          </Text>
-          <Text style={styles.progressPercent}>{clampedAverage}%</Text>
+          <Text style={styles.heroTitle}>Average score</Text>
+          <Text style={styles.heroPercent}>{clampedAverage}%</Text>
         </View>
-        <View style={[styles.barBackground, { backgroundColor: trackBg }]}>
-          <View
-            style={[styles.barFill, { width: `${clampedAverage}%` }]}
-          />
+        <View style={styles.heroBar}>
+          <View style={[styles.heroBarFill, { width: `${clampedAverage}%` }]} />
         </View>
       </View>
 
       {scores.length === 0 ? (
-        <View
-          style={[
-            styles.card,
-            { backgroundColor: cardBg, borderColor: cardBorder },
-          ]}
-        >
-          <Text style={[styles.cardTitle, { color: titleColor }]}>
-            No quizzes taken yet
-          </Text>
-          <Text style={[styles.cardMeta, { color: metaColor }]}>
+        <View style={styles.panelCard}>
+          <Text style={styles.panelTitle}>No quizzes taken yet</Text>
+          <Text style={styles.panelMeta}>
             Finish a quiz in the Quiz tab to see your results here.
           </Text>
         </View>
       ) : (
         <View style={styles.recentSection}>
           <View style={styles.recentHeaderRow}>
-            <Text style={[styles.sectionHeading, { color: titleColor }]}>
-              Latest Scores
-            </Text>
+            <Text style={styles.sectionHeading}>Latest Scores</Text>
           </View>
 
           {scores.map((quiz, index) => (
             <TouchableOpacity
               key={quiz.id || `quiz-${index}`}
-              style={[
-                styles.scoreCard,
-                { backgroundColor: cardBg, borderColor: cardBorder },
-              ]}
+              style={styles.scoreCard}
               activeOpacity={0.85}
               onPress={() => setSelectedQuiz(quiz)}
             >
-              <View style={styles.rowTop}>
+              <View style={styles.scoreRow}>
                 <View style={{ flex: 1, paddingRight: 12 }}>
-                  <Text style={[styles.cardTitle, { color: titleColor }]}>
-                    {quiz.title}
-                  </Text>
-                  <Text style={[styles.cardMeta, { color: metaColor }]}>
+                  <Text style={styles.panelTitle}>{quiz.title}</Text>
+                  <Text style={styles.panelMeta}>
                     {formatQuizDate(quiz.date)}
                   </Text>
                 </View>
-                <Text style={styles.scoreText}>{quiz.score}%</Text>
+                <Text style={styles.scoreValue}>{quiz.score}%</Text>
               </View>
             </TouchableOpacity>
           ))}
@@ -248,106 +194,3 @@ export default function ProgressScreen({ isDark }) {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  heroCard: {
-    borderRadius: 18,
-    paddingVertical: 24,
-    paddingHorizontal: 20,
-    marginBottom: 18,
-    borderWidth: 1.5,
-  },
-  progressTop: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  heroTitle: {
-    fontSize: 18,
-    fontWeight: "800",
-  },
-  progressPercent: {
-    fontSize: 24,
-    fontWeight: "900",
-    color: "#1D9BF0",
-  },
-  barBackground: {
-    height: 11,
-    borderRadius: 999,
-    overflow: "hidden",
-    marginTop: 16,
-  },
-  barFill: {
-    height: "100%",
-    borderRadius: 999,
-    backgroundColor: "#1D9BF0",
-  },
-  recentSection: {
-    marginTop: 4,
-  },
-  recentHeaderRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  sectionHeading: {
-    fontSize: 18,
-    fontWeight: "800",
-  },
-  card: {
-    borderRadius: 16,
-    padding: 18,
-    marginBottom: 14,
-    borderWidth: 1,
-  },
-  scoreCard: {
-    borderRadius: 14,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    marginBottom: 10,
-    borderWidth: 1,
-  },
-  rowTop: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  detailHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  backBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 2,
-  },
-  deleteBtn: {
-    padding: 2,
-  },
-  backText: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: "#1D9BF0",
-  },
-  detailSubtitle: {
-    fontSize: 13,
-    marginTop: 5,
-    marginBottom: 12,
-  },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  cardMeta: {
-    fontSize: 12,
-    marginTop: 5,
-  },
-  scoreText: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#1D9BF0",
-  },
-});
