@@ -1,30 +1,34 @@
-// HOME SCREEN: welcome message and the average score
+// HOME SCREEN: welcome message, the average score, and the settings pop-up
 
-// Icons from Expo (used for the settings gear)
 import { Ionicons } from "@expo/vector-icons";
-// Building blocks: scrollable screen, text, pressable area, box
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-// Functions that give the colors and styles for dark or light mode
+import { useState } from "react";
+import {
+  Modal,
+  ScrollView,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { getColors, getStyles } from "../../styles";
-// Gives access to the shared data
 import { useDecks } from "../contexts/Deckcontext";
 
-// goTo = changes the open tab, onOpenSettings = opens the settings pop-up
-export default function HomeScreen({ goTo, onOpenSettings, isDark }) {
-  // Styles and colors that match the current mode
+// goTo = changes the open tab, isDark / setIsDark = the color mode from App
+export default function HomeScreen({ goTo, isDark, setIsDark }) {
   const styles = getStyles(isDark);
   const colors = getColors(isDark);
-  // The average score from the shared data
   const { average } = useDecks();
 
+  // Is the settings pop-up open?
+  const [showSettings, setShowSettings] = useState(false);
+
   return (
-    // Scrollable screen
     <ScrollView contentContainerStyle={styles.content}>
       {/* Settings gear on the right */}
       <View style={styles.settingsRow}>
         <TouchableOpacity
           style={styles.settingsButton}
-          onPress={onOpenSettings}
+          onPress={() => setShowSettings(true)}
         >
           <Ionicons name="settings-outline" size={22} color={colors.text} />
         </TouchableOpacity>
@@ -52,16 +56,49 @@ export default function HomeScreen({ goTo, onOpenSettings, isDark }) {
         activeOpacity={0.8}
         onPress={() => goTo("progress")}
       >
-        {/* Label on the left, percent on the right */}
         <View style={styles.progressTop}>
           <Text style={styles.cardTitle}>Average score</Text>
           <Text style={styles.progressPercent}>{average}%</Text>
         </View>
-        {/* Empty bar with a blue part as wide as the average */}
         <View style={styles.barBackground}>
           <View style={[styles.barFill, { width: `${average}%` }]} />
         </View>
       </TouchableOpacity>
+
+      {/* Settings pop-up */}
+      <Modal visible={showSettings} transparent animationType="slide">
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalCard}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Settings</Text>
+              <TouchableOpacity onPress={() => setShowSettings(false)}>
+                <Ionicons name="close" size={24} color={colors.text} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.settingRow}>
+              <Text style={styles.settingLabel}>Dark Mode</Text>
+              <Switch value={isDark} onValueChange={setIsDark} />
+            </View>
+
+            <View style={styles.aboutBox}>
+              <Text style={styles.aboutTitle}>About CramWise</Text>
+              <Text style={styles.aboutBody}>
+                CramWise is your smart study companion. Review flashcards, take
+                quizzes, and track your progress. Study less stress, cram
+                wisely.
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              style={[styles.button, styles.closeButton]}
+              onPress={() => setShowSettings(false)}
+            >
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
