@@ -9,6 +9,22 @@ import { createContext, useContext, useEffect, useState } from "react";
 // The name of the "drawer" where the data is saved on the phone
 const STORAGE_KEY = "cramwise_data";
 
+// Month names used to write the date (the same on every phone)
+const MONTHS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
 // The shared box (the real data is put in by DeckProvider below)
 const DeckContext = createContext(null);
 
@@ -93,12 +109,14 @@ export function DeckProvider({ children }) {
 
   // Saves a quiz result (items = the card-by-card answers)
   const addScore = (deckId, title, score, items = []) => {
+    // Today's date
+    const today = new Date();
     const entry = {
       id: Date.now().toString(),
       deckId,
       title,
-      // Today's date
-      date: new Date().toLocaleDateString(),
+      // Written like "Nov 27, 2026"
+      date: `${MONTHS[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}`,
       score,
       items,
     };

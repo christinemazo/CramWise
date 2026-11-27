@@ -11,68 +11,6 @@ import { getColors, getStyles } from "../../styles";
 // Gives access to the shared data and actions
 import { useDecks } from "../contexts/Deckcontext";
 
-// Turns a saved date (text or Date) into a real Date, or null if it cannot be read
-function parseQuizDate(rawDate) {
-  // Nothing saved
-  if (!rawDate) return null;
-  // Already a Date: use it if it is valid
-  if (rawDate instanceof Date) {
-    return Number.isNaN(rawDate.getTime()) ? null : rawDate;
-  }
-
-  // Turn the value into clean text
-  const str = String(rawDate).trim();
-  if (!str) return null;
-
-  // Handle YYYY-MM-DD in local time so midnight doesn't shift by timezone
-  const isoMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(str);
-  if (isoMatch) {
-    const year = Number(isoMatch[1]);
-    // Months start at 0 in JavaScript, so subtract 1
-    const month = Number(isoMatch[2]) - 1;
-    const day = Number(isoMatch[3]);
-    const parsed = new Date(year, month, day);
-    return Number.isNaN(parsed.getTime()) ? null : parsed;
-  }
-
-  // Any other format: let JavaScript try to read it
-  const parsed = new Date(str);
-  return Number.isNaN(parsed.getTime()) ? null : parsed;
-}
-
-// Turns a saved date into "Today", "Yesterday", or a short date like "Oct 26"
-function formatQuizDate(rawDate) {
-  const dateObj = parseQuizDate(rawDate);
-  // If the date cannot be read, show the original text
-  if (!dateObj) return rawDate ? String(rawDate) : "";
-
-  // Midnight of today and of the quiz day, so only the day is compared
-  const now = new Date();
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const targetStart = new Date(
-    dateObj.getFullYear(),
-    dateObj.getMonth(),
-    dateObj.getDate(),
-  );
-
-  // How many days ago the quiz was taken
-  const dayDiff = Math.round(
-    (todayStart.getTime() - targetStart.getTime()) / (1000 * 60 * 60 * 24),
-  );
-
-  if (dayDiff === 0) return "Today";
-  if (dayDiff === 1) return "Yesterday";
-
-  // Show the year only when it is not the current year
-  const includeYear = targetStart.getFullYear() !== todayStart.getFullYear();
-
-  return targetStart.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    ...(includeYear ? { year: "numeric" } : {}),
-  });
-}
-
 export default function ProgressScreen({ isDark }) {
   // Styles and colors that match the current mode
   const styles = getStyles(isDark);
@@ -99,9 +37,6 @@ export default function ProgressScreen({ isDark }) {
 
   // When a quiz card is tapped, show that quiz's details and answers
   if (selectedQuiz) {
-    // "Today", "Yesterday" or a short date
-    const formattedSelectedDate = formatQuizDate(selectedQuiz.date);
-
     return (
       <ScrollView
         contentContainerStyle={styles.content}
@@ -134,7 +69,7 @@ export default function ProgressScreen({ isDark }) {
         {/* Quiz name, date and score */}
         <Text style={styles.title}>{selectedQuiz.title}</Text>
         <Text style={styles.detailSubtitle}>
-          Completed {formattedSelectedDate} · Score: {selectedQuiz.score}%
+          Completed {selectedQuiz.date} · Score: {selectedQuiz.score}%
         </Text>
 
         {/* Card-by-card answers, or a message for older quizzes without them */}
@@ -225,9 +160,7 @@ export default function ProgressScreen({ isDark }) {
               <View style={styles.scoreRow}>
                 <View style={{ flex: 1, paddingRight: 12 }}>
                   <Text style={styles.panelTitle}>{quiz.title}</Text>
-                  <Text style={styles.panelMeta}>
-                    {formatQuizDate(quiz.date)}
-                  </Text>
+                  <Text style={styles.panelMeta}>{quiz.date}</Text>
                 </View>
                 <Text style={styles.scoreValue}>{quiz.score}%</Text>
               </View>
