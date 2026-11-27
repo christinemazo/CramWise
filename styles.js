@@ -1,8 +1,13 @@
+// STYLES: all colors and styles of the app, for dark and light mode
+
+// StyleSheet is the React Native tool for creating styles (like CSS)
 import { StyleSheet } from "react-native";
 
 // COLORS
 // One set for dark mode and one for light mode.
+// Both sets use the same names, so the screens never need to know the mode.
 
+// Colors used in dark mode
 export const darkColors = {
   background: "#0F1629", // screen background (dark navy)
   card: "#17263A", // cards, rows and the tab bar
@@ -21,6 +26,7 @@ export const darkColors = {
   success: "#22C55E", // green (got it)
 };
 
+// Colors used in light mode
 export const lightColors = {
   background: "#F8FAFC", // screen background (very light gray)
   card: "#FFFFFF", // cards, rows and the tab bar
@@ -76,7 +82,7 @@ export function getStyles(isDark) {
     }, // heading for a section
     label: { fontSize: 13, color: colors.text, marginBottom: 6 }, // text above a field
 
-    // CARDS: rounded boxes used on Home, Create and Progress
+    // CARDS: rounded boxes used on Home, Create and Quiz
 
     card: {
       backgroundColor: colors.card,
@@ -95,7 +101,7 @@ export function getStyles(isDark) {
     }, // title inside a card
     cardBody: { fontSize: 14, lineHeight: 20, color: colors.muted }, // paragraph inside a card
 
-    // PROGRESS BAR: used on Home and Progress
+    // PROGRESS BAR: used on Home and Quiz (progressTop is also used on Progress)
 
     progressTop: {
       flexDirection: "row",
@@ -114,9 +120,9 @@ export function getStyles(isDark) {
       height: "100%",
       backgroundColor: colors.accent,
       borderRadius: 10,
-    }, // filled part (width is set in app.js)
+    }, // filled part (width is set in the screen)
 
-    // CREATE FORM: the static fields and button on the Create screen
+    // FORM AND BUTTONS: inputs and buttons used on the Create and Quiz screens
 
     input: {
       backgroundColor: colors.input,
@@ -126,9 +132,9 @@ export function getStyles(isDark) {
       marginBottom: 16,
       borderWidth: 1,
       borderColor: colors.border,
-    }, // box that looks like a text field
+    }, // typing box
     textArea: { minHeight: 70, textAlignVertical: "top" }, // taller box for question and answer
-    fieldText: { color: colors.subtle }, // placeholder-style text in the static fields
+    fieldText: { color: colors.subtle }, // placeholder-style text (not used by any screen now)
     button: {
       backgroundColor: colors.accent,
       padding: 12,
@@ -199,8 +205,7 @@ export function getStyles(isDark) {
       flexDirection: "row",
       justifyContent: "space-between",
       marginBottom: 16,
-    },
-    // title on the left, close icon on the right
+    }, // title on the left, close icon on the right
     modalTitle: { fontSize: 20, fontWeight: "700", color: colors.text }, // "Settings"
     settingRow: {
       flexDirection: "row",
@@ -234,7 +239,7 @@ export function getStyles(isDark) {
     }, // big % on the result screen
     centerText: { textAlign: "center" }, // centered text
 
-    // NEW: CREATE SCREEN (real inputs, deck picker, delete)
+    // CREATE SCREEN EXTRAS: spacing, deck header, delete text, flashcard top row
 
     buttonSpaced: { marginTop: 0, marginBottom: 24 }, // Create Deck button spacing
     deckHeader: {
@@ -249,7 +254,7 @@ export function getStyles(isDark) {
       alignItems: "center",
     }, // QUESTION label + trash icon
 
-    // NEW: HOME deck list
+    // DECK ROWS: one row per deck on the Create and Quiz screens
 
     deckRow: {
       flexDirection: "row",
@@ -261,7 +266,7 @@ export function getStyles(isDark) {
       borderColor: colors.border,
       padding: 16,
       marginBottom: 10,
-    }, // one deck on Home
+    }, // one deck row
     deckRowActive: { borderColor: colors.accent }, // selected deck
     deckRowTitle: { color: colors.text, fontWeight: "700", fontSize: 15 }, // deck name
     deckRowCount: { color: colors.muted, fontSize: 13 }, // "5 cards"
